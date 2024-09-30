@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 
+import '../../../MySqlConnection.dart';
+
 class GeneralInformation extends StatefulWidget {
   const GeneralInformation({super.key});
 
@@ -18,6 +20,35 @@ class _GeneralInformationState extends State<GeneralInformation> {
       color: Color(0xffffffff), fontSize: 18, fontWeight: FontWeight.bold);
   // static const contentStyle = TextStyle(
   //     color: Color(0xff999999), fontSize: 14, fontWeight: FontWeight.normal);
+
+  Future<List<GeneralDataCard>> returnGeneralInfoCards() async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+
+    // Get the records
+    List<Map<String, dynamic>> records = await connHandler.selectGenInfo();
+    List<GeneralDataCard> generalDataCards = [];
+
+    for (var record in records) {
+      final card = GeneralDataCard(
+        id: int.parse(record['id'].toString()),
+        firstName: record['first_name'] ?? 'No Name',
+        lastName: record['second_name'] ?? 'No Second Name',
+        middleName: record['middle_name'] ?? 'No Middle Name',
+        date: record['date'] ?? 'No Date',
+        address: record['address'] ?? 'No Address',
+        phone: record['phone_number'] ?? 'No Phone',
+        status: record['status'] == '1',
+      );
+
+      generalDataCards.add(card); // Add the card to the list
+    }
+
+    await connHandler.close(); // Close the connection
+    return generalDataCards; // Return the list of GeneralDataCard objects
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -28,35 +59,27 @@ class _GeneralInformationState extends State<GeneralInformation> {
             contentVerticalPadding: 0,
             contentHorizontalPadding: 0,
             headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon:
-            const Icon(Icons.text_fields_rounded, color: Colors.white),
+            leftIcon: const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Загальні Дані', style: headerStyle),
-            content: Column(
-              children: [
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: false),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-                GeneralDataCard(id: 32323, firstName: 'Illia', lastName: 'Muravets',
-                    middleName: 'Andriyovich', date: '17.07.2006', address: 'м. Нововолинськ, вул. Незалежності',
-                    phone: '+380683590633', status: true),
-              ],
+            content: FutureBuilder<List<GeneralDataCard>>(
+              future: returnGeneralInfoCards(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No data found');
+                }
+                return Column(
+                  children: snapshot.data!.map((card) {
+                    return card;
+                  }).toList(),
+                );
+              },
             ),
           ),
+
           AccordionSection(
             // isOpen: true,
             contentVerticalPadding: 20,

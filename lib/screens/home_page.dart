@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
+import 'package:test_journal/MySqlConnection.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,35 +16,19 @@ class _HomePageState extends State<HomePage> {
   String name = '';
 
   Future<void> connection() async {
-    print("Connecting to mysql server...");
+    final connHandler = MySqlConnectionHandler(); // Створюємо об'єкт MySqlConnectionHandler
 
-    // create connection
-    final conn = await MySQLConnection.createConnection(
-      host: "10.0.2.2",
-      port: 3306,
-      userName: "illia",
-      password: "123456",
-      databaseName: "journal", // optional
-    );
+    await connHandler.connect(); // Підключаємося до бази даних
+    // await connHandler.update();  // Виконуємо оновлення
+    // Get records
+    List<Map<String, dynamic>> records = await connHandler.selectGenInfo();
 
-    await conn.connect();
-
-    print("Connected");
-
-    var result = await conn.execute("SELECT name FROM book WHERE id = 2");
-    for (final row in result.rows) {
-      print(row.assoc());
-      setState(() {
-        name = row.assoc().toString();
-      });
+    // Output the records
+    for (var record in records) {
+      print('ID: ${record['id']} ${record['second_name']}, ');
     }
-    // update some rows
-    var res = await conn.execute(
-      "UPDATE book SET name = :name",
-      {"name": "changed name"},
-    );
 
-    print(res.affectedRows);
+    await connHandler.close();
   }
 
   void workWithStudents(){
