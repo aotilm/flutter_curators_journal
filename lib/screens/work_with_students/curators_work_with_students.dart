@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:test_journal/screens/work_with_students/screens/general_information.dart';
 
-class WorkWithStudents extends StatefulWidget {
-  const WorkWithStudents({super.key});
+import 'curator_screens/general_information.dart';
+
+class CuratorsWorkWithStudents extends StatefulWidget {
+  const CuratorsWorkWithStudents({super.key});
 
   @override
-  State<WorkWithStudents> createState() => _WorkWithStudentsState();
+  State<CuratorsWorkWithStudents> createState() => _CuratorsWorkWithStudentsState();
 }
 
-class _WorkWithStudentsState extends State<WorkWithStudents> {
+class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   int selectedPage = 0 ;
   @override
   Widget build(BuildContext context) {

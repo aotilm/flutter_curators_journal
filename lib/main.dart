@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/home_page.dart';
-import 'package:test_journal/screens/work_with_students/screens/activity.dart';
-import 'package:test_journal/screens/work_with_students/screens/general_information.dart';
-import 'package:test_journal/screens/work_with_students/work_with_students.dart';
+import 'package:test_journal/screens/work_with_students/admin_work_with_students.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/general_information.dart';
+import 'package:test_journal/screens/work_with_students/curators_work_with_students.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,10 +34,11 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      initialRoute: '/work_with_students',
+      initialRoute: '/admin_work_with_students',
       routes: {
         '/': (context) => HomePage(),
-        '/work_with_students': (context) => WorkWithStudents(),
+        '/work_with_students': (context) => CuratorsWorkWithStudents(),
+        '/admin_work_with_students': (context) => AdminWorkWithStudents(),
         '/general_information': (context) => GeneralInformation(),
         '/activity': (context) => Activity()
       },

@@ -59,6 +59,11 @@ class _HomePageState extends State<HomePage> {
                 onPressed: workWithStudents,
                 child:
                 Text("Робота з студентами")
+            ),
+            FilledButton(
+                onPressed: () => Navigator.pushNamed(context, '/admin_work_with_students'),
+                child:
+                Text("Робота з студентами Admin")
             )
           ],
         ),
