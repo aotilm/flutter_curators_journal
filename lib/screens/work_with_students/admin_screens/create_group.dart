@@ -17,7 +17,76 @@ class _CreateGroupState extends State<CreateGroup> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
+        onPressed: ()=> showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('AlertDialog Title'),
+            content: Column(
+              children: [
+                SizedBox(
+                  width: 350,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: 'Призвіще',
+                    ),
+                    onSaved: (String? value) {
+                      // This optional block of code can be used to run
+                      // code when the user saves the form.
+                    },
+                    validator: (String? value) {
+                      return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                    },
+                  ),
+                ),
+
+                SizedBox(
+                  width: 350,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: 'Ім`я',
+                    ),
+                    onSaved: (String? value) {
+                      // This optional block of code can be used to run
+                      // code when the user saves the form.
+                    },
+                    validator: (String? value) {
+                      return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                    },
+                  ),
+                ),
+
+                SizedBox(
+                  width: 350,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: 'Побатькові',
+                    ),
+                    onSaved: (String? value) {
+                      // This optional block of code can be used to run
+                      // code when the user saves the form.
+                    },
+                    validator: (String? value) {
+                      return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                    },
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
         child: const Icon(Icons.add),
       ),
       body: Padding(
@@ -36,56 +105,7 @@ class _CreateGroupState extends State<CreateGroup> {
                 children: [
                   Column(
                     children: [
-                      SizedBox(
-                        width: 350,
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
-                            hintText: 'Призвіще',
-                          ),
-                          onSaved: (String? value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                          },
-                          validator: (String? value) {
-                            return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                          },
-                        ),
-                      ),
 
-                      SizedBox(
-                        width: 350,
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
-                            hintText: 'Ім`я',
-                          ),
-                          onSaved: (String? value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                          },
-                          validator: (String? value) {
-                            return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                          },
-                        ),
-                      ),
-
-                      SizedBox(
-                        width: 350,
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
-                            hintText: 'Побатькові',
-                          ),
-                          onSaved: (String? value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                          },
-                          validator: (String? value) {
-                            return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                          },
-                        ),
-                      )
                     ],
                   ),
                 ],

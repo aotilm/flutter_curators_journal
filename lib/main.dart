@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      initialRoute: '/admin_work_with_students',
+      initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
         '/work_with_students': (context) => CuratorsWorkWithStudents(),

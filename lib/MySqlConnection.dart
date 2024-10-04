@@ -37,7 +37,14 @@ class MySqlConnectionHandler {
     List<Map<String, dynamic>> records = []; // List to store records
 
     try {
-      var result = await _connection!.execute("SELECT * FROM general_info");
+      // var result = await _connection!.execute("SELECT * FROM general_info");
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, s.group, 
+               gi.phone_number, gi.date, gi.address, gi.status
+        FROM students s 
+        JOIN general_info gi ON s.id = gi.id_student;
+      ''');
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -49,6 +56,33 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectEduData() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+      // var result = await _connection!.execute("SELECT * FROM general_info");
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               ed.average_score, ed.end_date, ed.institution_name
+        FROM students s 
+        JOIN education_data ed ON s.id = ed.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
   // Виконання SQL-запиту на оновлення
   Future<void> update() async {
     if (_connection == null) {

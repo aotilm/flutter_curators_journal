@@ -30,7 +30,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
     List<DataCards> generalDataCards = [];
 
     for (var record in records) {
-      final card = DataCards(
+      final card = DataCards.general(
+        type: 1,
         id: int.parse(record['id'].toString()),
         firstName: record['first_name'] ?? 'No Name',
         lastName: record['second_name'] ?? 'No Second Name',
@@ -48,14 +49,40 @@ class _GeneralInformationState extends State<GeneralInformation> {
     return generalDataCards; // Return the list of GeneralDataCard objects
   }
 
+  Future<List<DataCards>> returnEducationData() async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
 
+    // Get the records
+    List<Map<String, dynamic>> records = await connHandler.selectEduData();
+    List<DataCards> generalDataCards = [];
+
+    for (var record in records) {
+      final card = DataCards.education(
+        type: 2,
+        id: int.parse(record['id'].toString()),
+        firstName: record['first_name'] ?? 'No Name',
+        lastName: record['second_name'] ?? 'No Second Name',
+        middleName: record['middle_name'] ?? 'No Middle Name',
+        institution_name: record['institution_name'] ?? 'No',
+        end_date: record['end_date'] ?? 'No',
+        average_score: double.parse(record['average_score'].toString())
+        // average_score: 11.1,
+      );
+
+      generalDataCards.add(card);
+    }
+
+    await connHandler.close(); // Close the connection
+    return generalDataCards; // Return the list of GeneralDataCard objects
+  }
   @override
   Widget build(BuildContext context) {
 
     return Accordion(
         children: [
           AccordionSection(
-            isOpen: true,
+            // isOpen: true,
             contentVerticalPadding: 0,
             contentHorizontalPadding: 0,
             headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -81,14 +108,31 @@ class _GeneralInformationState extends State<GeneralInformation> {
           ),
 
           AccordionSection(
-            // isOpen: true,
-            contentVerticalPadding: 20,
-            contentHorizontalPadding: 20,
+            isOpen: true,
+            contentVerticalPadding: 0,
+            contentHorizontalPadding: 0,
             headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             leftIcon:
             const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Дані про освіту', style: headerStyle),
-            content: const Text(loremIpsum),
+            // content: DataCards.education(type: 2, id: 1, firstName: "Муравець", lastName: 'Ілля', middleName: 'Андрійович', end_date: '31.09.2021', institution_name: 'Нововолинський ліцей №1', average_score: 11.3),
+            content: FutureBuilder<List<DataCards>>(
+              future: returnEducationData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No data found');
+                }
+                return Column(
+                  children: snapshot.data!.map((card) {
+                    return card;
+                  }).toList(),
+                );
+              },
+            ),
           ),
           AccordionSection(
             // isOpen: true,
