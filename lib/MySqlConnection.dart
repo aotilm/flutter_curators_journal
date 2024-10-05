@@ -83,6 +83,88 @@ class MySqlConnectionHandler {
 
     return records; // Return the list of records
   }
+
+  Future<List<Map<String, dynamic>>> selectServInArmyData() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               sia.start_date, sia.end_date, sia.unit
+        FROM students s 
+        JOIN service_in_army sia ON s.id = sia.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectJobActivityData() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               ja.end_date, ja.start_date, ja.place, ja.job_position, ja.phone_number
+        FROM students s 
+        JOIN job_activity ja ON s.id = ja.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectParentsInfoData() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               pi.father, pi.fathers_phone, pi.mother, pi.mothers_phone, pi.note
+        FROM students s 
+        JOIN parents_info pi ON s.id = pi.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
   // Виконання SQL-запиту на оновлення
   Future<void> update() async {
     if (_connection == null) {

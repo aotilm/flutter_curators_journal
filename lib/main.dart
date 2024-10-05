@@ -32,7 +32,14 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w800,
             fontSize: 20
           )
-        )
+        ),
+        textTheme: TextTheme(
+          // bodyLarge: TextStyle(fontSize: 20.0), // Для загального тексту
+          // bodyMedium: TextStyle(fontSize: 16.0), // Інший стиль для основного тексту
+          // displayLarge: TextStyle(fontSize: 24.0), // Для заголовків
+          // displayMedium: TextStyle(fontSize: 22.0), // Для заголовків меншого розміру
+          // Інші стилі за потреби
+        ),
       ),
       initialRoute: '/',
       routes: {
