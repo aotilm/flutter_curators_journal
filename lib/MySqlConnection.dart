@@ -165,6 +165,30 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectStudentData() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT * FROM students;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
   // Виконання SQL-запиту на оновлення
   Future<void> update() async {
     if (_connection == null) {

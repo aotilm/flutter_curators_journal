@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_journal/screens/work_with_students/edit_form.dart';
 
 class DataCardBase {
   final int id;
@@ -12,6 +13,51 @@ class DataCardBase {
     required this.lastName,
     required this.middleName,
   });
+
+  Card returnCard(BuildContext context) {
+    return Card(
+      child: InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          // Використовуйте Navigator для переходу на новий екран з формою
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                firstName: firstName,
+                lastName: lastName,
+                middleName: middleName,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Запис №$id',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$lastName $firstName $middleName',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }
 
 class GeneralDataCard extends DataCardBase {
@@ -36,14 +82,14 @@ class GeneralDataCard extends DataCardBase {
     middleName: middleName,
   );
 
-  Card returnGenInfoCard(){
+  Card returnGenInfoCard(context){
     return Card(
 
       child:
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print("$id");
+          Navigator.pushNamed(context, '/edit_form');
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),

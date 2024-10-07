@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../MySqlConnection.dart';
+import 'cards.dart';
 import 'curator_screens/general_information.dart';
 
 class CuratorsWorkWithStudents extends StatefulWidget {
@@ -11,6 +13,30 @@ class CuratorsWorkWithStudents extends StatefulWidget {
 
 class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   int selectedPage = 0 ;
+
+  Future<List<DataCardBase>> returnCards() async { //
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+
+    // Get the records
+    List<Map<String, dynamic>> records = await connHandler.selectStudentData(); //
+    List<DataCardBase> dataCards = [];//
+
+    for (var record in records) {
+      final card = DataCardBase(//
+        id: int.parse(record['id'].toString()),
+        firstName: record['first_name'] ?? 'No Name',
+        lastName: record['second_name'] ?? 'No Second Name',
+        middleName: record['middle_name'] ?? 'No Middle Name',
+      );
+
+      dataCards.add(card);
+    }
+
+    await connHandler.close(); // Close the connection
+    return dataCards; // Return the list of GeneralDataCard objects
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +120,86 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
       ),
 
       body: Scaffold(
-        body:  _getBodyContent(),
+        body: 
+          DefaultTabController(
+            length: 2,
+            child: Column(
+              children: [
+                TabBar(
+                  // labelColor: Colors.blue, // Колір тексту активної вкладки
+                  // unselectedLabelColor: Colors.grey, // Колір тексту неактивних вкладок
+                  // indicatorColor: Colors.blue, // Колір індикатора активної вкладки
+                  tabs: [
+                    Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.people),
+                          SizedBox(width: 8),
+                          Text("Усі студенти"),
+                        ],
+                      ),
+                    ),
+
+                    Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.people),
+                          SizedBox(width: 8),
+                          Text("Розширенна"),
+                        ],
+                      ),
+                    )
+
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      // Text('усі студікі'),
+                      Column(
+                        children: [
+                          Padding(
+                              padding:  const EdgeInsets.only(top: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'тут буде група студентів куратора',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                          ),
+
+                          FutureBuilder<List<DataCardBase>>(
+                            future: returnCards(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Text('No data found');
+                              }
+
+                              return Column(
+                                children: snapshot.data!.map<Widget>((card) {
+                                  return card.returnCard(context);
+                                }).toList(),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      _getBodyContent(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
       ),
     );
   }
@@ -105,8 +210,12 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
       case 2:
         return Text('Активність');
       default:
-        return Center(
-            child:  Text("Вітаємо!")
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Вітаємо!"),
+            Text('Виберіть розділ у меню')
+          ],
         );
     }
   }

@@ -12,10 +12,7 @@ class GeneralInformation extends StatefulWidget {
 }
 
 class _GeneralInformationState extends State<GeneralInformation> {
-  static const loremIpsum =
-  '''Lorem ipsum is typically a corrupted version of 'De finibus bonorum et 
-  malorum', a 1st century BC text by the Roman statesman and philosopher Cicero,
-   with words altered, added, and removed to make it nonsensical and improper Latin.''';
+
   static const headerStyle = TextStyle(
       color: Color(0xffffffff), fontSize: 18, fontWeight: FontWeight.bold);
 
@@ -152,10 +149,12 @@ class _GeneralInformationState extends State<GeneralInformation> {
     return dataCards; // Return the list of GeneralDataCard objects
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Accordion(
         children: [
+
           AccordionSection(
             contentVerticalPadding: 0,
             contentHorizontalPadding: 0,
@@ -175,7 +174,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
                 return Column(
                   children: snapshot.data!.map<Widget>((card) {
-                    return card.returnGenInfoCard();
+                    return card.returnGenInfoCard(context);
                   }).toList(),
                 );
               },
@@ -264,7 +263,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
             ),
           ),
           AccordionSection(
-            isOpen: true,
+            // isOpen: true,
             contentVerticalPadding: 0,
             contentHorizontalPadding: 0,
             headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -291,6 +290,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
             ),
           )
         ]);
+
+
   }
 }
 
