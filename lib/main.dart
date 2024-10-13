@@ -5,6 +5,7 @@ import 'package:test_journal/screens/work_with_students/curator_screens/activity
 import 'package:test_journal/screens/work_with_students/curator_screens/general_information.dart';
 import 'package:test_journal/screens/work_with_students/curators_work_with_students.dart';
 import 'package:test_journal/screens/work_with_students/edit_form.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,14 +35,17 @@ class MyApp extends StatelessWidget {
             fontSize: 20
           )
         ),
-        textTheme: TextTheme(
-          // bodyLarge: TextStyle(fontSize: 20.0), // Для загального тексту
-          // bodyMedium: TextStyle(fontSize: 16.0), // Інший стиль для основного тексту
-          // displayLarge: TextStyle(fontSize: 24.0), // Для заголовків
-          // displayMedium: TextStyle(fontSize: 22.0), // Для заголовків меншого розміру
-          // Інші стилі за потреби
-        ),
       ),
+      locale: const Locale('uk', 'UA'),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('uk', 'UA'),
+        const Locale('en', 'US'),
+      ],
       initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),

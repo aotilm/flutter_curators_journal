@@ -19,7 +19,6 @@ class DataCardBase {
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          // Використовуйте Navigator для переходу на новий екран з формою
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -89,7 +88,7 @@ class GeneralDataCard extends DataCardBase {
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          Navigator.pushNamed(context, '/edit_form');
+          // Navigator.pushNamed(context, '/edit_form');
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),

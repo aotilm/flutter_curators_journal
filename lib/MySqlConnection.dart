@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  final String _host = "10.0.2.2";
+  final String _host = "192.168.0.106";
+  // final String _host = "192.168.191.28";
+
   final int _port = 3306;
   final String _userName = "root";
   final String _password = "123456";
@@ -189,6 +193,92 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> checkIfExists(int id, String table) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = [];
+
+    try {
+      var result = await _connection!.execute(
+          'SELECT * FROM $table WHERE id_student = :id_student',
+          {'id_student': id}
+      );
+
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+    return records;
+
+  }
+
+  Future<void> insertGenInfo(String phone, String date, String address, bool status, int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+    
+    try {
+      var result = await _connection!.execute(
+         '''
+            INSERT INTO 
+            general_info (phone_number, date, address, status, id_student) 
+            VALUES (:phone, :date, :address, :status, :id);
+         ''',
+          {
+            'phone': phone,
+            'date': date,
+            'address': address,
+            'status': status,
+            'id': id
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+
+  Future<void> updateGenInfo(int id, String phone_number, String date, String address) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE general_info
+      SET
+        phone_number = :phone_number,  
+        date = :date,          
+        address = :address        
+      WHERE id_student = :id;       
+      ''',
+          {
+            'phone_number': phone_number,
+            'date': date,
+            'address': address,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+
+
+
   // Виконання SQL-запиту на оновлення
   Future<void> update() async {
     if (_connection == null) {
@@ -199,7 +289,7 @@ class MySqlConnectionHandler {
     try {
       var result = await _connection!.execute(
         "UPDATE book SET name = :name WHERE id = :id",
-        {'name': 'Zaid', 'id': 1}, // Параметри запиту
+        {'name': 'Zaid', 'id': 1},
       );
       print('Updated rows: ${result.affectedRows}');
     } catch (e) {

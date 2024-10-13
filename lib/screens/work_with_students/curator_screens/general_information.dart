@@ -59,8 +59,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
           middleName: record['middle_name'] ?? 'No Middle Name',
           institutionName: record['institution_name'] ?? 'No',
           endDate: record['end_date'] ?? 'No',
-          // averageScore: double.parse(record['average_score'].toString())
-        averageScore: 1
+          averageScore: double.parse(record['average_score'].toString())
+        // averageScore: 1
       );
 
       educationDataCards.add(card);
