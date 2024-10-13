@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  final String _host = "192.168.0.106";
+  // final String _host = "192.168.0.106";
   // final String _host = "192.168.191.28";
+
+  final String _host = "192.168.1.108";
 
   final int _port = 3306;
   final String _userName = "root";
@@ -245,9 +247,7 @@ class MySqlConnectionHandler {
     }
 
   }
-
-
-  Future<void> updateGenInfo(int id, String phone_number, String date, String address) async {
+  Future<void> updateGenInfo(int id, String phoneNumber, String date, String address) async {
     if (_connection == null) {
       print('No database connection found.');
       return;
@@ -264,7 +264,7 @@ class MySqlConnectionHandler {
       WHERE id_student = :id;       
       ''',
           {
-            'phone_number': phone_number,
+            'phone_number': phoneNumber,
             'date': date,
             'address': address,
             'id': id
@@ -277,10 +277,7 @@ class MySqlConnectionHandler {
     }
   }
 
-
-
-  // Виконання SQL-запиту на оновлення
-  Future<void> update() async {
+  Future<void> updateEduData(int id, String institutionName, String endDate, String averageScore) async {
     if (_connection == null) {
       print('No database connection found.');
       return;
@@ -288,14 +285,111 @@ class MySqlConnectionHandler {
 
     try {
       var result = await _connection!.execute(
-        "UPDATE book SET name = :name WHERE id = :id",
-        {'name': 'Zaid', 'id': 1},
+          ''' 
+          UPDATE education_data
+          SET
+            institution_name = :institution_name,  
+            end_date = :end_date,          
+            average_score = :average_score        
+          WHERE id_student = :id;       
+      ''',
+          {
+            'institution_name': institutionName,
+            'end_date': endDate,
+            'average_score': averageScore,
+            'id': id
+          }
       );
+
       print('Updated rows: ${result.affectedRows}');
     } catch (e) {
       print('Update query failed: $e');
     }
   }
+  Future<void> insertEduDate(String endDate, String institutionName, String averageScore, int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            education_data (end_date, institution_name, average_score, id_student) 
+            VALUES (:end_date, :institution_name, :average_score, :id_student);
+         ''',
+          {
+            'end_date': endDate,
+            'institution_name': institutionName,
+            'average_score': averageScore,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+  Future<void> updateArmyServ(int id, String startDate, String endDate, String unit) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+          UPDATE service_in_army
+          SET
+            start_date = :start_date,  
+            end_date = :end_date,          
+            unit = :unit        
+          WHERE id_student = :id;       
+      ''',
+          {
+            'start_date': startDate,
+            'end_date': endDate,
+            'unit': unit,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertArmyServ(String endDate, String startDate, String unit, int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            service_in_army (end_date, start_date, unit, id_student) 
+            VALUES (:end_date, :start_date, :unit, :id_student);
+         ''',
+          {
+            'end_date': endDate,
+            'start_date': startDate,
+            'unit': unit,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+
 
   // Функція для закриття з'єднання
   Future<void> close() async {
