@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  // final String _host = "192.168.0.106";
+  final String _host = "192.168.0.106";
   // final String _host = "192.168.191.28";
 
-  final String _host = "192.168.1.108";
+  // final String _host = "192.168.1.108";
 
   final int _port = 3306;
   final String _userName = "root";
@@ -389,6 +389,68 @@ class MySqlConnectionHandler {
 
   }
 
+  Future<void> updateJobActivity(int id, String startDate, String endDate, String place,
+      String jobPosition, String phoneNumber) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+    UPDATE job_activity
+    SET
+      start_date = :start_date,  
+      end_date = :end_date,          
+      place = :place,  -- Added missing comma
+      job_position = :job_position,  -- Added missing comma
+      phone_number = :phone_number
+    WHERE id_student = :id;       
+    ''',
+          {
+            'start_date': startDate,
+            'end_date': endDate,
+            'place': place,
+            'job_position': jobPosition,
+            'phone_number': phoneNumber,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertJobActivity(int id, String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            job_activity (end_date, start_date, phone_number, place, job_position, id_student) 
+            VALUES (:end_date, :start_date, :phone_number, :place, :job_position, :id_student);
+         ''',
+          {
+            'end_date': endDate,
+            'start_date': startDate,
+            'phone_number': phoneNumber,
+            'place': place,
+            'job_position': jobPosition,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
 
 
   // Функція для закриття з'єднання

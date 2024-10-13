@@ -51,19 +51,26 @@ class EditFormState extends State<EditForm> {
 
   final TextEditingController unitController = TextEditingController();
 
+  final TextEditingController placeController = TextEditingController();
+  final TextEditingController positionController = TextEditingController();
 
+  void clearData(){
+    dateController1.clear();
+    dateController2.clear();
+    phoneNumberController.clear();
+  }
   Widget getFormContent(){
     if(selectedValue == editForms[0]){
-      // returnFormFields('general_info');
       return getGenInfoForm();
     }
     if(selectedValue == editForms[1]){
-      // returnFormFields('education_data');
       return getEduDataForm();
     }
     if(selectedValue == editForms[2]){
-      // returnFormFields('service_in_army');
       return getArmyServForm();
+    }
+    if(selectedValue == editForms[3]){
+      return getJobActivityForm();
     }
     else return Text('0');
   }
@@ -137,6 +144,19 @@ class EditFormState extends State<EditForm> {
         dateController2.text = records[0]['end_date'] ?? 'No Date';
         dateController1.text = records[0]['start_date'] ?? 'No Date';
         unitController.text = records[0]['unit'] ?? 'No unit';
+      }
+    }
+
+    if(selectedValue == editForms[3]){
+      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'job_activity');
+      if(records.isNotEmpty){
+        dateController1.text = records[0]['start_date'] ?? 'No Date';
+        dateController2.text = records[0]['end_date'] ?? 'No Date';
+        phoneNumberController.text = records[0]['phone_number'] ?? 'No number';
+        placeController.text = records[0]['place'] ?? 'No number';
+        positionController.text = records[0]['job_position'] ?? 'No number';
+
+
       }
     }
 
@@ -514,6 +534,172 @@ class EditFormState extends State<EditForm> {
     await connHandler.close();
   }
 
+  Widget getJobActivityForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 185,
+                child: TextFormField(
+                  controller: dateController1,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.date_range),
+                    labelText: 'Дата початку',
+                  ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть дату';
+                    }
+                    return null;
+                  },
+                  onTap: () {
+                    selectDate();
+                  },
+                  onSaved: (value) {
+                    dateController1.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 185,
+                child: TextFormField(
+                  controller: dateController2,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.date_range),
+                    labelText: 'Дата закінчення',
+                  ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть дату';
+                    }
+                    return null;
+                  },
+                  onTap: () {
+                    selectDate2();
+                  },
+                  onSaved: (value) {
+                    dateController2.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: placeController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Місце роботи',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть місце роботи';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    placeController.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: positionController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Посада',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть посаду';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    positionController.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 175,
+                child: TextFormField(
+                  controller: phoneNumberController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Номер телефону',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть номер телефону';
+                    }
+                    if(value.length > 13){
+                      return 'Задовгий номер';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    phoneNumberController.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await updateJobActivity(dateController1.text, dateController2.text, placeController.text,
+                        positionController.text, phoneNumberController.text);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> updateJobActivity(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "job_activity");
+
+    if (records.isNotEmpty) {
+      await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+    } else if(records.isEmpty){
+      print('Запис не знайдено.');
+      await connHandler.insertJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+    }
+    await connHandler.close();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -546,6 +732,7 @@ class EditFormState extends State<EditForm> {
                   onChanged: (String? newValue) {
                     setState(() {
                       selectedValue = newValue;
+                      clearData();
                       returnFormFields();
                     });
                   },
