@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
 
 import '../../MySqlConnection.dart';
 import 'cards.dart';
@@ -208,7 +209,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
       case 1:
         return GeneralInformation();
       case 2:
-        return Text('Активність');
+        return Activity();
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,

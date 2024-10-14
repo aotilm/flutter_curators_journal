@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import '../../../MySqlConnection.dart';
 
@@ -66,6 +67,10 @@ class EditFormState extends State<EditForm> {
     if(selectedValue == editForms[4]){
       return getParentsInfoForm();
     }
+
+    if(selectedValue == editForms[5]){
+      return getSocialActivityForm();
+    }
     else return Text('This page is in developing...');
   }
 
@@ -119,8 +124,8 @@ class EditFormState extends State<EditForm> {
       List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'general_info');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['date'] ?? 'No ';
-        fieldController2.text = records[0]['address'] ?? 'No ';
-        fieldController3.text = records[0]['phone_number'] ?? 'No ';
+        fieldController3.text = records[0]['address'] ?? 'No ';
+        fieldController2.text = records[0]['phone_number'] ?? 'No ';
       }
     }
     if(selectedValue == editForms[1]){
@@ -146,9 +151,9 @@ class EditFormState extends State<EditForm> {
       if(records.isNotEmpty){
         fieldController1.text = records[0]['start_date'] ?? 'No ';
         fieldController2.text = records[0]['end_date'] ?? 'No ';
-        fieldController3.text = records[0]['phone_number'] ?? 'No ';
-        fieldController4.text = records[0]['place'] ?? 'No ';
-        fieldController5.text = records[0]['job_position'] ?? 'No ';
+        fieldController3.text = records[0]['place'] ?? 'No ';
+        fieldController4.text = records[0]['job_position'] ?? 'No ';
+        fieldController5.text = records[0]['phone_number'] ?? 'No ';
       }
     }
     if(selectedValue == editForms[4]){
@@ -159,6 +164,15 @@ class EditFormState extends State<EditForm> {
         fieldController3.text = records[0]['mother'] ?? 'No ';
         fieldController4.text = records[0]['mothers_phone'] ?? 'No ';
         fieldController5.text = records[0]['note'] ?? 'No ';
+      }
+    }
+
+    if(selectedValue == editForms[5]){
+      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'social_activity');
+      if(records.isNotEmpty){
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['date'] ?? 'No ';
+        fieldController3.text = records[0]['activity'] ?? 'No ';
       }
     }
 
@@ -851,6 +865,131 @@ class EditFormState extends State<EditForm> {
     } else if(records.isEmpty){
       print('Запис не знайдено.');
       await connHandler.insertParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
+    }
+    await connHandler.close();
+  }
+
+  Widget getSocialActivityForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+             Row(
+               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children: [
+                 SizedBox(
+                   width: 160,
+                   child: TextFormField(
+                     controller: fieldController1,
+                     keyboardType: TextInputType.number,
+                     inputFormatters: <TextInputFormatter>[
+                       FilteringTextInputFormatter.digitsOnly
+                     ],
+                     decoration: const InputDecoration(
+                       icon: Icon(Icons.note),
+                       labelText: 'Семестр',
+                     ),
+                     validator: (value) {
+                       if (value == null || value.isEmpty) {
+                         return 'Введіть семестр';
+                       }
+                       return null;
+                     },
+                     onSaved: (value) {
+                       fieldController1.text = value!;
+                     },
+                   ),
+                 ),
+                 SizedBox(
+                   width: 160,
+                   child: TextFormField(
+                     controller: fieldController2,
+                     decoration: const InputDecoration(
+                       icon: Icon(Icons.date_range),
+                       labelText: 'Дата',
+                     ),
+                     readOnly: true,
+                     validator: (value) {
+                       if (value == null || value.isEmpty) {
+                         return 'Введіть дату';
+                       }
+                       return null;
+                     },
+                     onTap: () {
+                       selectDate2();
+                     },
+                     onSaved: (value) {
+                       fieldController2.text = value!;
+                     },
+                   ),
+                 ),
+               ],
+             ),
+
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: fieldController3,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Діяльність',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть діяльність';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController3.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await updateSocialActivity(int.parse(fieldController1.text), fieldController2.text, fieldController3.text);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> updateSocialActivity(int session, String date, String activity) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "social_activity");
+
+    if (records.isNotEmpty) {
+      await connHandler.updateSocialActivity(widget.id, session, date, activity);
+    } else if(records.isEmpty){
+      print('Запис не знайдено.');
+      await connHandler.insertSocialActivity(widget.id, session, date, activity);
     }
     await connHandler.close();
   }

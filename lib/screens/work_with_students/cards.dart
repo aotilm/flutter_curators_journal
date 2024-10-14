@@ -503,3 +503,151 @@ class ParentsInfoDataCard extends DataCardBase {
     );
   }
 }
+
+
+class SocialActivityCard extends DataCardBase {
+  final String session;
+  final String date;
+  final String activity;
+
+  SocialActivityCard({
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String middleName,
+    required this.session,
+    required this.date,
+    required this.activity,
+  }) : super(
+    id: id,
+    firstName: firstName,
+    lastName: lastName,
+    middleName: middleName,
+  );
+
+  Card returnSocialActivityCards(){
+    return Card(
+
+      child:
+      InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          print("$id");
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Запис №$id',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$lastName $firstName $middleName',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      'Семестр №$session'
+                  ),
+                  Text(
+                      '$date'
+                  ),
+                ],
+              ),
+              Text(
+                  '$activity'
+              ),
+
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CircleActivityCard extends DataCardBase {
+  final String session;
+  final String circleName;
+  final String note;
+
+  CircleActivityCard({
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String middleName,
+    required this.session,
+    required this.circleName,
+    required this.note,
+  }) : super(
+    id: id,
+    firstName: firstName,
+    lastName: lastName,
+    middleName: middleName,
+  );
+
+  Card returnCircleActivityCards(){
+    return Card(
+
+      child:
+      InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          print("$id");
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Запис №$id',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$lastName $firstName $middleName',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      'Семестр №$session'
+                  ),
+                  Text(
+                      '$circleName'
+                  ),
+                ],
+              ),
+              Text(
+                  '$note'
+              ),
+
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+

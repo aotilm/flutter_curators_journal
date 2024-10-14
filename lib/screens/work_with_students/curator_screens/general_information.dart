@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
-import 'package:accordion/controllers.dart';
 import '../cards.dart';
 import '../../../MySqlConnection.dart';
 
@@ -289,7 +288,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
               },
             ),
           )
-        ]);
+        ]
+    );
 
 
   }

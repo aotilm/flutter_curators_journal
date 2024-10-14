@@ -195,6 +195,62 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectSocialActivity() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               sa.session, sa.date, sa.activity
+        FROM students s 
+        JOIN social_activity sa ON s.id = sa.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectCircleActivity() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               ca.session, ca.circle_name, ca.note
+        FROM students s 
+        JOIN circle_activity ca ON s.id = ca.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+
+
   Future<List<Map<String, dynamic>>> checkIfExists(int id, String table) async {
     if (_connection == null) {
       print('No database connection found.');
@@ -512,6 +568,64 @@ class MySqlConnectionHandler {
     }
 
   }
+
+  Future<void> updateSocialActivity(int id, int session, String date, String activity) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE social_activity
+      SET
+        session = :session,  
+        date = :date,          
+        activity = :activity
+      WHERE id_student = :id;       
+    ''',
+          {
+            'session': session,
+            'date': date,
+            'activity': activity,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertSocialActivity(int id, int session, String date, String activity) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            social_activity (session, date, activity, id_student) 
+            VALUES (:session, :date, :activity, :id_student);
+         ''',
+          {
+            'session': session,
+            'date': date,
+            'activity': activity,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+
 
   // Функція для закриття з'єднання
   Future<void> close() async {
