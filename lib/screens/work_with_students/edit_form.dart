@@ -27,13 +27,8 @@ class EditFormState extends State<EditForm> {
   DateTime? selectedDate1;
   DateTime? selectedDate2;
 
-  // String? phoneNumber;
-  // String? address;
-  // String? date;
-  final formKey = GlobalKey<FormState>();
 
-  // final List<String> editForms = ["Загальні відомості", "Громадська та гурткова діяльність",
-  //   // "Індивідуальний супровід", "Заохочення", "Соціальний паспорт"];
+  final formKey = GlobalKey<FormState>();
 
   final List<String> editForms = ["Загальні дані", 'Дані про освіту', 'Служба в ЗСУ', 'Трудова діяльність',
     'Інформація про батьків', 'Громадська діяльність',
@@ -53,6 +48,8 @@ class EditFormState extends State<EditForm> {
 
   final TextEditingController placeController = TextEditingController();
   final TextEditingController positionController = TextEditingController();
+
+  
 
   void clearData(){
     dateController1.clear();
@@ -288,7 +285,6 @@ class EditFormState extends State<EditForm> {
     }
     await connHandler.close();
   }
-
 
   Widget getEduDataForm(){
     return Form(
@@ -687,6 +683,129 @@ class EditFormState extends State<EditForm> {
     );
   }
   Future<void> updateJobActivity(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "job_activity");
+
+    if (records.isNotEmpty) {
+      await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+    } else if(records.isEmpty){
+      print('Запис не знайдено.');
+      await connHandler.insertJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+    }
+    await connHandler.close();
+  }
+
+  Widget getParentsInfoForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 185,
+                child: TextFormField(
+                  controller: dateController1,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.date_range),
+                    labelText: 'Дата початку',
+                  ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть дату';
+                    }
+                    return null;
+                  },
+                  onTap: () {
+                    selectDate();
+                  },
+                  onSaved: (value) {
+                    dateController1.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 185,
+                child: TextFormField(
+                  controller: dateController2,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.date_range),
+                    labelText: 'Дата закінчення',
+                  ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть дату';
+                    }
+                    return null;
+                  },
+                  onTap: () {
+                    selectDate2();
+                  },
+                  onSaved: (value) {
+                    dateController2.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: placeController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Батько',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть ПІБ батька';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    placeController.text = value!;
+                  },
+                ),
+              ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await updateJobActivity(dateController1.text, dateController2.text, placeController.text,
+                        positionController.text, phoneNumberController.text);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> updateParentsInfo(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
     List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "job_activity");

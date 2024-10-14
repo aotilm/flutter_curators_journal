@@ -389,8 +389,7 @@ class MySqlConnectionHandler {
 
   }
 
-  Future<void> updateJobActivity(int id, String startDate, String endDate, String place,
-      String jobPosition, String phoneNumber) async {
+  Future<void> updateJobActivity(int id, String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
     if (_connection == null) {
       print('No database connection found.');
       return;
@@ -399,14 +398,14 @@ class MySqlConnectionHandler {
     try {
       var result = await _connection!.execute(
           ''' 
-    UPDATE job_activity
-    SET
-      start_date = :start_date,  
-      end_date = :end_date,          
-      place = :place,  -- Added missing comma
-      job_position = :job_position,  -- Added missing comma
-      phone_number = :phone_number
-    WHERE id_student = :id;       
+      UPDATE job_activity
+      SET
+        start_date = :start_date,  
+        end_date = :end_date,          
+        place = :place,  -- Added missing comma
+        job_position = :job_position,  -- Added missing comma
+        phone_number = :phone_number
+      WHERE id_student = :id;       
     ''',
           {
             'start_date': startDate,
@@ -452,6 +451,67 @@ class MySqlConnectionHandler {
 
   }
 
+  Future<void> updateParentsInfo(int id, String father, String fathersPhone, String mother, String mothersPhone, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE parents_info
+      SET
+        father = :father,  
+        fathers_phone = :fathersPhone,          
+        mother = :mother,  
+        mothers_phone = :mothersPhone, 
+        note = :note
+      WHERE id_student = :id;       
+    ''',
+          {
+            'father': father,
+            'fathersPhone': fathersPhone,
+            'mother': mother,
+            'mothers_phone': mothersPhone,
+            'note': note,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertParentsInfo(int id, String father, String fathersPhone, String mother, String mothersPhone, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            parents_info (father, fathers_phone, mother, mothers_phone, note, id_student) 
+            VALUES (:father, :fathers_phone, :mother, :mothers_phone, :note, :id_student);
+         ''',
+          {
+            'father': father,
+            'fathers_phone': fathersPhone,
+            'mother': mother,
+            'mothers_phone': mothersPhone,
+            'note': note,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
 
   // Функція для закриття з'єднання
   Future<void> close() async {
