@@ -473,7 +473,7 @@ class MySqlConnectionHandler {
             'father': father,
             'fathersPhone': fathersPhone,
             'mother': mother,
-            'mothers_phone': mothersPhone,
+            'mothersPhone': mothersPhone,
             'note': note,
             'id': id
           }

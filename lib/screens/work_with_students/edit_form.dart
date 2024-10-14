@@ -34,27 +34,21 @@ class EditFormState extends State<EditForm> {
     'Інформація про батьків', 'Громадська діяльність',
     'Гурткова ідяльність', 'Індивідуальний супровід', 'Заохочення', 'Соціальний паспорт'];
 
-  // Загальні відомості
-  final TextEditingController dateController1 = TextEditingController();
-  final TextEditingController dateController2 = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
+  final TextEditingController fieldController1 = TextEditingController();
+  final TextEditingController fieldController2 = TextEditingController();
+  final TextEditingController fieldController3 = TextEditingController();
+  final TextEditingController fieldController4 = TextEditingController();
+  final TextEditingController fieldController5 = TextEditingController();
 
-  // Дані про освіту
-  final TextEditingController averageScoreController = TextEditingController();
-  final TextEditingController institutionController = TextEditingController();
-
-  final TextEditingController unitController = TextEditingController();
-
-  final TextEditingController placeController = TextEditingController();
-  final TextEditingController positionController = TextEditingController();
 
   
 
   void clearData(){
-    dateController1.clear();
-    dateController2.clear();
-    phoneNumberController.clear();
+    fieldController1.clear();
+    fieldController2.clear();
+    fieldController3.clear();
+    fieldController4.clear();
+    fieldController5.clear();
   }
   Widget getFormContent(){
     if(selectedValue == editForms[0]){
@@ -69,7 +63,10 @@ class EditFormState extends State<EditForm> {
     if(selectedValue == editForms[3]){
       return getJobActivityForm();
     }
-    else return Text('0');
+    if(selectedValue == editForms[4]){
+      return getParentsInfoForm();
+    }
+    else return Text('This page is in developing...');
   }
 
   Widget dialogMessage(String message) {
@@ -95,7 +92,7 @@ class EditFormState extends State<EditForm> {
     if (date != null) {
       setState(() {
         selectedDate1 = date;
-        dateController1.text = '${selectedDate1!.year}-${selectedDate1!.month}-${selectedDate1!.day}';
+        fieldController1.text = '${selectedDate1!.year}-${selectedDate1!.month}-${selectedDate1!.day}';
       });
     }
   }
@@ -110,7 +107,7 @@ class EditFormState extends State<EditForm> {
     if (date != null) {
       setState(() {
         selectedDate2 = date;
-        dateController2.text = '${selectedDate2!.year}-${selectedDate2!.month}-${selectedDate2!.day}';
+        fieldController2.text = '${selectedDate2!.year}-${selectedDate2!.month}-${selectedDate2!.day}';
       });
     }
   }
@@ -121,39 +118,47 @@ class EditFormState extends State<EditForm> {
     if(selectedValue == editForms[0]){
       List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'general_info');
       if(records.isNotEmpty){
-        dateController1.text = records[0]['date'] ?? 'No Date';
-        addressController.text = records[0]['address'] ?? 'No Address';
-        phoneNumberController.text = records[0]['phone_number'] ?? 'No Phone';
+        fieldController1.text = records[0]['date'] ?? 'No ';
+        fieldController2.text = records[0]['address'] ?? 'No ';
+        fieldController3.text = records[0]['phone_number'] ?? 'No ';
       }
     }
     if(selectedValue == editForms[1]){
       List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'education_data');
       if(records.isNotEmpty){
-        dateController1.text = records[0]['end_date'] ?? 'No Date';
-        averageScoreController.text = records[0]['average_score'] ?? 'No end data';
-        institutionController.text = records[0]['institution_name'] ?? 'No institution';
+        fieldController1.text = records[0]['end_date'] ?? 'No ';
+        fieldController2.text = records[0]['average_score'] ?? 'No  ';
+        fieldController3.text = records[0]['institution_name'] ?? 'No ';
       }
     }
 
     if(selectedValue == editForms[2]){
       List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'service_in_army');
       if(records.isNotEmpty){
-        dateController2.text = records[0]['end_date'] ?? 'No Date';
-        dateController1.text = records[0]['start_date'] ?? 'No Date';
-        unitController.text = records[0]['unit'] ?? 'No unit';
+        fieldController2.text = records[0]['end_date'] ?? 'No ';
+        fieldController1.text = records[0]['start_date'] ?? 'No ';
+        fieldController3.text = records[0]['unit'] ?? 'No ';
       }
     }
 
     if(selectedValue == editForms[3]){
       List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'job_activity');
       if(records.isNotEmpty){
-        dateController1.text = records[0]['start_date'] ?? 'No Date';
-        dateController2.text = records[0]['end_date'] ?? 'No Date';
-        phoneNumberController.text = records[0]['phone_number'] ?? 'No number';
-        placeController.text = records[0]['place'] ?? 'No number';
-        positionController.text = records[0]['job_position'] ?? 'No number';
-
-
+        fieldController1.text = records[0]['start_date'] ?? 'No ';
+        fieldController2.text = records[0]['end_date'] ?? 'No ';
+        fieldController3.text = records[0]['phone_number'] ?? 'No ';
+        fieldController4.text = records[0]['place'] ?? 'No ';
+        fieldController5.text = records[0]['job_position'] ?? 'No ';
+      }
+    }
+    if(selectedValue == editForms[4]){
+      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'parents_info');
+      if(records.isNotEmpty){
+        fieldController1.text = records[0]['father'] ?? 'No ';
+        fieldController2.text = records[0]['fathers_phone'] ?? 'No ';
+        fieldController3.text = records[0]['mother'] ?? 'No ';
+        fieldController4.text = records[0]['mothers_phone'] ?? 'No ';
+        fieldController5.text = records[0]['note'] ?? 'No ';
       }
     }
 
@@ -174,7 +179,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController1,
+                  controller: fieldController1,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата народження',
@@ -190,14 +195,14 @@ class EditFormState extends State<EditForm> {
                     selectDate();
                   },
                   onSaved: (value) {
-                    dateController1.text = value!;
+                    fieldController1.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 175,
                 child: TextFormField(
-                  controller: phoneNumberController,
+                  controller: fieldController2,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Номер телефону',
@@ -212,7 +217,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    phoneNumberController.text = value!;
+                    fieldController2.text = value!;
                   },
                 ),
               ),
@@ -224,7 +229,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: addressController,
+                  controller: fieldController3,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Адреса',
@@ -236,7 +241,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    addressController.text = value!;
+                    fieldController4.text = value!;
                   },
                 ),
               ),
@@ -250,7 +255,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateGenInfo(phoneNumberController.text, dateController1.text, addressController.text);  // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
+                    await updateGenInfo(fieldController2.text, fieldController1.text, fieldController3.text);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -297,7 +302,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController1,
+                  controller: fieldController1,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -313,14 +318,14 @@ class EditFormState extends State<EditForm> {
                     selectDate();
                   },
                   onSaved: (value) {
-                    dateController1.text = value!;
+                    fieldController1.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 175,
                 child: TextFormField(
-                  controller: averageScoreController,
+                  controller: fieldController2,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Середній бал',
@@ -332,7 +337,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    averageScoreController.text = value!;
+                    fieldController2.text = value!;
                   },
                 ),
               ),
@@ -344,7 +349,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: institutionController,
+                  controller: fieldController3,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Назва закладу',
@@ -356,7 +361,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    institutionController.text = value!;
+                    fieldController3.text = value!;
                   },
                 ),
               ),
@@ -370,7 +375,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateEduData(institutionController.text, dateController1.text, averageScoreController.text);  // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
+                    await updateEduData(fieldController3.text, fieldController1.text, fieldController2.text);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -417,7 +422,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController1,
+                  controller: fieldController1,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата початку',
@@ -433,14 +438,14 @@ class EditFormState extends State<EditForm> {
                     selectDate();
                   },
                   onSaved: (value) {
-                    dateController1.text = value!;
+                    fieldController1.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController2,
+                  controller: fieldController2,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -456,7 +461,7 @@ class EditFormState extends State<EditForm> {
                     selectDate2();
                   },
                   onSaved: (value) {
-                    dateController2.text = value!;
+                    fieldController2.text = value!;
                   },
                 ),
               ),
@@ -468,7 +473,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: unitController,
+                  controller: fieldController3,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Підрозділ',
@@ -480,7 +485,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    institutionController.text = value!;
+                    fieldController3.text = value!;
                   },
                 ),
               ),
@@ -494,7 +499,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateArmyServ(unitController.text, dateController2.text, dateController1.text); // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
+                    await updateArmyServ(fieldController3.text, fieldController2.text, fieldController1.text); // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -541,7 +546,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController1,
+                  controller: fieldController1,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата початку',
@@ -557,14 +562,14 @@ class EditFormState extends State<EditForm> {
                     selectDate();
                   },
                   onSaved: (value) {
-                    dateController1.text = value!;
+                    fieldController1.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 185,
                 child: TextFormField(
-                  controller: dateController2,
+                  controller: fieldController2,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -580,7 +585,7 @@ class EditFormState extends State<EditForm> {
                     selectDate2();
                   },
                   onSaved: (value) {
-                    dateController2.text = value!;
+                    fieldController2.text = value!;
                   },
                 ),
               ),
@@ -592,7 +597,7 @@ class EditFormState extends State<EditForm> {
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: placeController,
+                  controller: fieldController3,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Місце роботи',
@@ -604,14 +609,14 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    placeController.text = value!;
+                    fieldController3.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: positionController,
+                  controller: fieldController4,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Посада',
@@ -623,14 +628,14 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    positionController.text = value!;
+                    fieldController4.text = value!;
                   },
                 ),
               ),
               SizedBox(
                 width: 175,
                 child: TextFormField(
-                  controller: phoneNumberController,
+                  controller: fieldController5,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Номер телефону',
@@ -645,7 +650,7 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    phoneNumberController.text = value!;
+                    fieldController5.text = value!;
                   },
                 ),
               ),
@@ -659,8 +664,8 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateJobActivity(dateController1.text, dateController2.text, placeController.text,
-                        positionController.text, phoneNumberController.text);
+                    await updateJobActivity(fieldController1.text, fieldController2.text, fieldController3.text,
+                        fieldController4.text, fieldController5.text);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -701,64 +706,13 @@ class EditFormState extends State<EditForm> {
       key: formKey,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 185,
-                child: TextFormField(
-                  controller: dateController1,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.date_range),
-                    labelText: 'Дата початку',
-                  ),
-                  readOnly: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введіть дату';
-                    }
-                    return null;
-                  },
-                  onTap: () {
-                    selectDate();
-                  },
-                  onSaved: (value) {
-                    dateController1.text = value!;
-                  },
-                ),
-              ),
-              SizedBox(
-                width: 185,
-                child: TextFormField(
-                  controller: dateController2,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.date_range),
-                    labelText: 'Дата закінчення',
-                  ),
-                  readOnly: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введіть дату';
-                    }
-                    return null;
-                  },
-                  onTap: () {
-                    selectDate2();
-                  },
-                  onSaved: (value) {
-                    dateController2.text = value!;
-                  },
-                ),
-              ),
-            ],
-          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 width: 350,
                 child: TextFormField(
-                  controller: placeController,
+                  controller: fieldController1,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Батько',
@@ -770,10 +724,92 @@ class EditFormState extends State<EditForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    placeController.text = value!;
+                    fieldController1.text = value!;
                   },
                 ),
               ),
+
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: fieldController2,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Телефон батька',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть телефон батька';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController2.text = value!;
+                  },
+                ),
+              ),
+
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: fieldController3,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Матір',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть ПІБ матері';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController3.text = value!;
+                  },
+                ),
+              ),
+
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: fieldController4,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Телефон матері',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть телефон матері';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController4.text = value!;
+                  },
+                ),
+              ),
+
+              SizedBox(
+                width: 350,
+                child: TextFormField(
+                  controller: fieldController5,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Примітка',
+                  ),
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Введіть телефон матері';
+                  //   }
+                  //   return null;
+                  // },
+                  onSaved: (value) {
+                    fieldController5.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -782,8 +818,8 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateJobActivity(dateController1.text, dateController2.text, placeController.text,
-                        positionController.text, phoneNumberController.text);
+                    await updateParentsInfo(fieldController1.text, fieldController2.text, fieldController3.text,
+                        fieldController4.text, fieldController5.text);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -805,16 +841,16 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateParentsInfo(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
+  Future<void> updateParentsInfo(String father, String fathersPhone, String mother, String mothersPhone, String note) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "job_activity");
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "parents_info");
 
     if (records.isNotEmpty) {
-      await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+      await connHandler.updateParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
     } else if(records.isEmpty){
       print('Запис не знайдено.');
-      await connHandler.insertJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+      await connHandler.insertParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
     }
     await connHandler.close();
   }
