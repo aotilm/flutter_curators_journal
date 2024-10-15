@@ -249,6 +249,34 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectIndividualEscort() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               ie.session, ie.date, ie.content
+        FROM students s 
+        JOIN individual_escort ie ON s.id = ie.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+
 
 
   Future<List<Map<String, dynamic>>> checkIfExists(int id, String table) async {
@@ -625,7 +653,117 @@ class MySqlConnectionHandler {
 
   }
 
+  Future<void> updateCircleActivity(int id, int session, String circleName, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
 
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE circle_activity
+      SET
+        session = :session,  
+        circle_name = :circle_name,          
+        note = :note
+      WHERE id_student = :id;       
+    ''',
+          {
+            'session': session,
+            'circle_name': circleName,
+            'note': note,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertCircleActivity(int id, int session, String circleName, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            circle_activity (session, circle_name, note, id_student) 
+            VALUES (:session, :circle_name, :note, :id_student);
+         ''',
+          {
+            'session': session,
+            'circle_name': circleName,
+            'note': note,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+  Future<void> updateIndividualEscort(int id, int session, String date, String content) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE individual_escort
+      SET
+        session = :session,  
+        date = :date,          
+        content = :content
+      WHERE id_student = :id;       
+    ''',
+          {
+            'session': session,
+            'date': date,
+            'content': content,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertIndividualEscort(int id, int session, String date, String content) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            individual_escort (session, date, content, id_student) 
+            VALUES (:session, :date, :content, :id_student);
+         ''',
+          {
+            'session': session,
+            'date': date,
+            'content': content,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
 
   // Функція для закриття з'єднання
   Future<void> close() async {

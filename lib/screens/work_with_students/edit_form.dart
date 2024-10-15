@@ -71,52 +71,15 @@ class EditFormState extends State<EditForm> {
     if(selectedValue == editForms[5]){
       return getSocialActivityForm();
     }
+    if(selectedValue == editForms[6]){
+      return getCircleActivityForm();
+    }
+    if(selectedValue == editForms[7]){
+      return getIndividualEscortForm();
+    }
     else return Text('This page is in developing...');
   }
 
-  Widget dialogMessage(String message) {
-    return AlertDialog(
-      title: const Text('Інформаційне вікно'),
-      content: Text(message),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
-
-  Future<void> selectDate() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900, 1, 1),
-      lastDate: DateTime.now(),
-    );
-    if (date != null) {
-      setState(() {
-        selectedDate1 = date;
-        fieldController1.text = '${selectedDate1!.year}-${selectedDate1!.month}-${selectedDate1!.day}';
-      });
-    }
-  }
-
-  Future<void> selectDate2() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900, 1, 1),
-      lastDate: DateTime.now(),
-    );
-    if (date != null) {
-      setState(() {
-        selectedDate2 = date;
-        fieldController2.text = '${selectedDate2!.year}-${selectedDate2!.month}-${selectedDate2!.day}';
-      });
-    }
-  }
-  
   Future<void> returnFormFields() async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
@@ -176,10 +139,73 @@ class EditFormState extends State<EditForm> {
       }
     }
 
+    if(selectedValue == editForms[6]){
+      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'circle_activity');
+      if(records.isNotEmpty){
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['circle_name'] ?? 'No ';
+        fieldController3.text = records[0]['note'] ?? 'No ';
+      }
+    }
+
+    if(selectedValue == editForms[7]){
+      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'individual_escort');
+      if(records.isNotEmpty){
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['date'] ?? 'No ';
+        fieldController3.text = records[0]['content'] ?? 'No ';
+      }
+    }
+
 
     await connHandler.close(); // Close the connection
     // return generalDataCards; // Return the list of GeneralDataCard objects
   }
+
+
+  Widget dialogMessage(String message) {
+    return AlertDialog(
+      title: const Text('Інформаційне вікно'),
+      content: Text(message),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('OK'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> selectDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900, 1, 1),
+      lastDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() {
+        selectedDate1 = date;
+        fieldController1.text = '${selectedDate1!.year}-${selectedDate1!.month}-${selectedDate1!.day}';
+      });
+    }
+  }
+
+  Future<void> selectDate2() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900, 1, 1),
+      lastDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() {
+        selectedDate2 = date;
+        fieldController2.text = '${selectedDate2!.year}-${selectedDate2!.month}-${selectedDate2!.day}';
+      });
+    }
+  }
+  
 
 
   Widget getGenInfoForm(){
@@ -191,9 +217,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: TextFormField(
                   controller: fieldController1,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата народження',
@@ -214,9 +241,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 175,
+                width: MediaQuery.of(context).size.width * 0.5,
                 child: TextFormField(
                   controller: fieldController2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Номер телефону',
@@ -241,9 +269,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Адреса',
@@ -314,9 +343,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: TextFormField(
                   controller: fieldController1,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -337,9 +367,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 175,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: TextFormField(
                   controller: fieldController2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Середній бал',
@@ -361,9 +392,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Назва закладу',
@@ -434,9 +466,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: TextFormField(
                   controller: fieldController1,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата початку',
@@ -457,9 +490,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.45,
                 child: TextFormField(
                   controller: fieldController2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -485,9 +519,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Підрозділ',
@@ -558,9 +593,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
                 child: TextFormField(
                   controller: fieldController1,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата початку',
@@ -581,9 +617,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 185,
+                width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
                 child: TextFormField(
                   controller: fieldController2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.date_range),
                     labelText: 'Дата закінчення',
@@ -609,9 +646,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Місце роботи',
@@ -628,9 +666,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController4,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Посада',
@@ -647,9 +686,10 @@ class EditFormState extends State<EditForm> {
                 ),
               ),
               SizedBox(
-                width: 175,
+                width: MediaQuery.of(context).size.width * 0.5,
                 child: TextFormField(
                   controller: fieldController5,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Номер телефону',
@@ -724,9 +764,10 @@ class EditFormState extends State<EditForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController1,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Батько',
@@ -744,9 +785,10 @@ class EditFormState extends State<EditForm> {
               ),
 
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Телефон батька',
@@ -764,9 +806,10 @@ class EditFormState extends State<EditForm> {
               ),
 
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.person),
                     labelText: 'Матір',
@@ -784,9 +827,10 @@ class EditFormState extends State<EditForm> {
               ),
 
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController4,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Телефон матері',
@@ -804,9 +848,10 @@ class EditFormState extends State<EditForm> {
               ),
 
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController5,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.note),
                     labelText: 'Примітка',
@@ -881,13 +926,14 @@ class EditFormState extends State<EditForm> {
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                children: [
                  SizedBox(
-                   width: 160,
+                   width: MediaQuery.of(context).size.width * 0.4,
                    child: TextFormField(
                      controller: fieldController1,
                      keyboardType: TextInputType.number,
                      inputFormatters: <TextInputFormatter>[
                        FilteringTextInputFormatter.digitsOnly
                      ],
+                     maxLines: null,
                      decoration: const InputDecoration(
                        icon: Icon(Icons.note),
                        labelText: 'Семестр',
@@ -904,9 +950,10 @@ class EditFormState extends State<EditForm> {
                    ),
                  ),
                  SizedBox(
-                   width: 160,
+                   width: MediaQuery.of(context).size.width * 0.4,
                    child: TextFormField(
                      controller: fieldController2,
+                     maxLines: null,
                      decoration: const InputDecoration(
                        icon: Icon(Icons.date_range),
                        labelText: 'Дата',
@@ -930,9 +977,10 @@ class EditFormState extends State<EditForm> {
              ),
 
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
                   controller: fieldController3,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.note),
                     labelText: 'Діяльність',
@@ -994,6 +1042,251 @@ class EditFormState extends State<EditForm> {
     await connHandler.close();
   }
 
+  Widget getCircleActivityForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: TextFormField(
+                      controller: fieldController1,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.note),
+                        labelText: 'Семестр',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введіть семестр';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        fieldController1.text = value!;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: TextFormField(
+                      controller: fieldController2,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.note),
+                        labelText: 'Гурток',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введіть гурток';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        fieldController2.text = value!;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  controller: fieldController3,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Нотатка',
+                  ),
+                  onSaved: (value) {
+                    fieldController3.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await updateCircleActivity(int.parse(fieldController1.text), fieldController2.text, fieldController3.text);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> updateCircleActivity(int session, String circleName, String note) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "circle_activity");
+
+    if (records.isNotEmpty) {
+      await connHandler.updateCircleActivity(widget.id, session, circleName, note);
+    } else if(records.isEmpty){
+      print('Запис не знайдено.');
+      await connHandler.insertCircleActivity(widget.id, session, circleName, note);
+    }
+    await connHandler.close();
+  }
+
+  Widget getIndividualEscortForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: TextFormField(
+                      controller: fieldController1,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.note),
+                        labelText: 'Семестр',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введіть семестр';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        fieldController1.text = value!;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: TextFormField(
+                      controller: fieldController2,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.date_range),
+                        labelText: 'Дата',
+                      ),
+                      readOnly: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введіть дату';
+                        }
+                        return null;
+                      },
+                      onTap: () {
+                        selectDate2();
+                      },
+                      onSaved: (value) {
+                        fieldController2.text = value!;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  controller: fieldController3,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Зміст',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть зміст';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController3.text = value!;
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await updateIndividualEscort(int.parse(fieldController1.text), fieldController2.text, fieldController3.text);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> updateIndividualEscort(int session, String date, String content) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "individual_escort");
+
+    if (records.isNotEmpty) {
+      await connHandler.updateIndividualEscort(widget.id, session, date, content);
+    } else if(records.isEmpty){
+      print('Запис не знайдено.');
+      await connHandler.insertIndividualEscort(widget.id, session, date, content);
+    }
+    await connHandler.close();
+  }
 
   @override
   Widget build(BuildContext context) {

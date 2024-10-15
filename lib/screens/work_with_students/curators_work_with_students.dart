@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/individual_escort.dart';
 
 import '../../MySqlConnection.dart';
 import 'cards.dart';
@@ -102,19 +103,34 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
             ListTile(
                 leading: const Icon(Icons.accessibility),
                 title: const Text('Індивідуальний супровід'),
-                onTap: null
+                onTap: (){
+                  setState(() {
+                    selectedPage = 3;
+                    Navigator.pop(context);
+                  });
+                }
             ),
 
             ListTile(
                 leading: const Icon(Icons.accessibility),
                 title: const Text('Заохочення'),
-                onTap: null
+                onTap: (){
+                  setState(() {
+                    selectedPage = 4;
+                    Navigator.pop(context);
+                  });
+                }
             ),
 
             ListTile(
                 leading: const Icon(Icons.accessibility),
                 title: const Text('Соціальний паспорт'),
-                onTap: null
+                onTap: (){
+                  setState(() {
+                    selectedPage = 5;
+                    Navigator.pop(context);
+                  });
+                }
             ),
           ],
         ),
@@ -210,6 +226,8 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
         return GeneralInformation();
       case 2:
         return Activity();
+      case 3:
+        return IndividualEscort();
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
