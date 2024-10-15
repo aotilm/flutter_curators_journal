@@ -15,7 +15,7 @@ class CuratorsWorkWithStudents extends StatefulWidget {
 
 class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   int selectedPage = 0 ;
-
+  int currentPageIndex = 0;
   Future<List<DataCardBase>> returnCards() async { //
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
@@ -46,10 +46,16 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
         title: Text("Робота з студентами",
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            color: Colors.white,
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Open the drawer with the new context
+            },
+          ),
+        ),
       ),
-
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -135,9 +141,29 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
           ],
         ),
       ),
-
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: Theme.of(context).primaryColor,
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.people, color: Colors.white,),
+            icon: Icon(Icons.people),
+            label: 'Робота з студентами',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.list_alt, color: Colors.white,),
+            icon: Icon(Icons.list_alt),
+            label: 'План роботи',
+          ),
+        ],
+      ),
       body: Scaffold(
-        body: 
+        body: <Widget>[
           DefaultTabController(
             length: 2,
             child: Column(
@@ -178,16 +204,16 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
                       Column(
                         children: [
                           Padding(
-                              padding:  const EdgeInsets.only(top: 16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'тут буде група студентів куратора',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
+                            padding:  const EdgeInsets.only(top: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'тут буде група студентів куратора',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
                           ),
 
                           FutureBuilder<List<DataCardBase>>(
@@ -216,7 +242,10 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
                 ),
               ],
             ),
-          )
+          ),
+          Text('hello'),
+        ][currentPageIndex]
+
       ),
     );
   }
