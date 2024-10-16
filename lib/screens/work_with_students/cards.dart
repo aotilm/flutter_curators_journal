@@ -724,3 +724,105 @@ class IndividualEscortCard extends DataCardBase {
   }
 }
 
+class WorkPlanCard {
+  final int id;
+  final int session;
+  final String eventName;
+  final String executionDate;
+  final String executor;
+  final bool isDone;
+  final bool adminConfirmation;
+
+  WorkPlanCard({
+    required this.id,
+    required this.session,
+    required this.eventName,
+    required this.executionDate,
+    required this.executor,
+    required this.isDone,
+    required this.adminConfirmation
+  });
+
+  Card returnCard(BuildContext context) {
+    return Card(
+      child: InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => EditForm(
+          //       id: id,
+          //       firstName: firstName,
+          //       lastName: lastName,
+          //       middleName: middleName,
+          //     ),
+          //   ),
+          // );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Запис №$id',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      'Семестр №$session',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+              ),
+
+              SizedBox(height: 6),
+              Text(
+                '$eventName',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Дата виконання :$executionDate',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 3),
+              Text(
+                'Виконавець :$executor',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Cтатус виконання: ',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                      isDone ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Підтвердження адміна: ',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                      adminConfirmation ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+}

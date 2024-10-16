@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
 import 'package:test_journal/screens/work_with_students/curator_screens/individual_escort.dart';
+import 'package:test_journal/screens/work_with_students/work_plan.dart';
 
 import '../../MySqlConnection.dart';
 import 'cards.dart';
@@ -243,7 +244,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
               ],
             ),
           ),
-          Text('hello'),
+          WorkPlan(),
         ][currentPageIndex]
 
       ),
