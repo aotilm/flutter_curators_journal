@@ -16,6 +16,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
       color: Color(0xffffffff), fontSize: 18, fontWeight: FontWeight.bold);
 
 
+
   Future<List<GeneralDataCard>> returnGeneralInfoCards() async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
@@ -26,14 +27,15 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
     for (var record in records) {
       final card = GeneralDataCard(
-        id: int.parse(record['id'].toString()),
-        firstName: record['first_name'] ?? 'No Name',
-        lastName: record['second_name'] ?? 'No Second Name',
-        middleName: record['middle_name'] ?? 'No Middle Name',
-        date: record['date'] ?? 'No Date',
-        address: record['address'] ?? 'No Address',
-        phone: record['phone_number'] ?? 'No Phone',
-        status: record['status'] == '1',
+          id: int.parse(record['id'].toString()),
+          firstName: record['first_name'] ?? 'No Name',
+          lastName: record['second_name'] ?? 'No Second Name',
+          middleName: record['middle_name'] ?? 'No Middle Name',
+          date: record['date'] ?? 'No Date',
+          address: record['address'] ?? 'No Address',
+          phone: record['phone_number'] ?? 'No Phone',
+          status: record['status'] == '1',
+          showName: true
       );
 
       generalDataCards.add(card);
@@ -58,7 +60,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
           middleName: record['middle_name'] ?? 'No Middle Name',
           institutionName: record['institution_name'] ?? 'No',
           endDate: record['end_date'] ?? 'No',
-          averageScore: double.parse(record['average_score'].toString())
+          averageScore: double.parse(record['average_score'].toString()),
+          showName: true
         // averageScore: 1
       );
 
@@ -84,7 +87,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
           middleName: record['middle_name'] ?? 'No Middle Name',
           serviceStartDate: record['start_date'] ?? 'No',
           serviceEndDate: record['end_date'] ?? 'No',
-          serviceUnit: record['unit']
+          serviceUnit: record['unit'],
+          showName: true
       );
 
       dataCards.add(card);
@@ -111,7 +115,9 @@ class _GeneralInformationState extends State<GeneralInformation> {
           start_date: record['start_date'] ?? 'No',
           place: record['place'] ?? 'No',
           phone_number: record['phone_number'] ?? 'No',
-          job_position: record['job_position'] ?? 'No'
+          job_position: record['job_position'] ?? 'No',
+          showName: true
+
       );
 
       dataCards.add(card);
@@ -138,7 +144,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
           fathers_phone: record['fathers_phone'] ?? 'No',
           mother: record['mother'] ?? 'No',
           mothers_phone: record['mothers_phone'] ?? 'No',
-          note: record['note'] ?? '-'
+          note: record['note'] ?? '-',
+          showName: true
       );
 
       dataCards.add(card);
@@ -160,24 +167,32 @@ class _GeneralInformationState extends State<GeneralInformation> {
             headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             leftIcon: const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Загальні Дані', style: headerStyle),
-            content: FutureBuilder<List<GeneralDataCard>>(
-              future: returnGeneralInfoCards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text('No data found');
-                }
+            content: Column(
+              children: [
+                FutureBuilder<List<GeneralDataCard>>(
+                  future: returnGeneralInfoCards(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Text('No data found');
+                    }
 
-                return Column(
-                  children: snapshot.data!.map<Widget>((card) {
-                    return card.returnGenInfoCard(context);
-                  }).toList(),
-                );
-              },
-            ),
+                    return Column(
+                      children: snapshot.data!.map<Widget>((card) {
+                        return card.returnGenInfoCard(context);
+                      }).toList(),
+                    );
+                  },
+                ),
+                SizedBox(height: 10)
+              ],
+            )
+
+
+
           ),
           AccordionSection(
             // isOpen: true,
@@ -188,24 +203,29 @@ class _GeneralInformationState extends State<GeneralInformation> {
             const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Дані про освіту', style: headerStyle),
             // content: Text('hello'),
-            content: FutureBuilder<List<EducationDataCard>>(
-              future: returnEducationDataCards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text('No data found');
-                }
+            content: Column(
+              children: [
+                FutureBuilder<List<EducationDataCard>>(
+                  future: returnEducationDataCards(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Text('No data found');
+                    }
 
-                return Column(
-                  children: snapshot.data!.map<Widget>((card) {
-                    return card.returnEduData();
-                  }).toList(),
-                );
-              },
-            ),
+                    return Column(
+                      children: snapshot.data!.map<Widget>((card) {
+                        return card.returnEduData(context);
+                      }).toList(),
+                    );
+                  },
+                ),
+                SizedBox(height: 10)
+              ],
+            )
           ),
           AccordionSection(
             // isOpen: true,
@@ -215,24 +235,29 @@ class _GeneralInformationState extends State<GeneralInformation> {
             leftIcon:
             const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Служба в ЗСУ', style: headerStyle),
-            content: FutureBuilder<List<ArmyServiceDataCard>>(
-              future: returnServiceInArmyCards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text('No data found');
-                }
+            content: Column(
+              children: [
+                FutureBuilder<List<ArmyServiceDataCard>>(
+                  future: returnServiceInArmyCards(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Text('No data found');
+                    }
 
-                return Column(
-                  children: snapshot.data!.map<Widget>((card) {
-                    return card.returnArmyData();
-                  }).toList(),
-                );
-              },
-            ),
+                    return Column(
+                      children: snapshot.data!.map<Widget>((card) {
+                        return card.returnArmyData(context);
+                      }).toList(),
+                    );
+                  },
+                ),
+                SizedBox(height: 10)
+              ],
+            )
           ),
           AccordionSection(
             // isOpen: true,
@@ -242,24 +267,29 @@ class _GeneralInformationState extends State<GeneralInformation> {
             leftIcon:
             const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Трудова діяльність', style: headerStyle),
-            content: FutureBuilder<List<JobActivityDataCard>>(
-              future: returnJobActivityCards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text('No data found');
-                }
+            content: Column(
+              children: [
+                FutureBuilder<List<JobActivityDataCard>>(
+                  future: returnJobActivityCards(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Text('No data found');
+                    }
 
-                return Column(
-                  children: snapshot.data!.map<Widget>((card) {
-                    return card.returnJobActivityData();
-                  }).toList(),
-                );
-              },
-            ),
+                    return Column(
+                      children: snapshot.data!.map<Widget>((card) {
+                        return card.returnJobActivityData();
+                      }).toList(),
+                    );
+                  },
+                ),
+                SizedBox(height: 10)
+              ],
+            )
           ),
           AccordionSection(
             // isOpen: true,
@@ -269,24 +299,29 @@ class _GeneralInformationState extends State<GeneralInformation> {
             leftIcon:
             const Icon(Icons.text_fields_rounded, color: Colors.white),
             header: const Text('Інформація про батьків', style: headerStyle),
-            content: FutureBuilder<List<ParentsInfoDataCard>>(
-              future: returnParentsInfoCards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text('No data found');
-                }
+            content: Column(
+              children: [
+                FutureBuilder<List<ParentsInfoDataCard>>(
+                  future: returnParentsInfoCards(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Text('No data found');
+                    }
 
-                return Column(
-                  children: snapshot.data!.map<Widget>((card) {
-                    return card.returnParentsInfoCards();
-                  }).toList(),
-                );
-              },
-            ),
+                    return Column(
+                      children: snapshot.data!.map<Widget>((card) {
+                        return card.returnParentsInfoCards();
+                      }).toList(),
+                    );
+                  },
+                ),
+                SizedBox(height: 10)
+              ],
+            )
           )
         ]
     );

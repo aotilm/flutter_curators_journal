@@ -3,10 +3,9 @@ import 'dart:developer';
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  final String _host = "192.168.0.106";
-  // final String _host = "192.168.191.28";
-
-  // final String _host = "192.168.1.108";
+  // final String _host = "192.168.0.109";
+  final String _host = "192.168.122.1";
+  // final String _host = "192.168.1.109";
 
   final int _port = 3306;
   final String _userName = "root";
@@ -15,7 +14,6 @@ class MySqlConnectionHandler {
 
   MySQLConnection? _connection;
 
-  // Функція для підключення до бази даних
   Future<void> connect() async {
     try {
       // Замість створення нової локальної змінної, призначаємо значення полю класу
@@ -279,7 +277,7 @@ class MySqlConnectionHandler {
 
 
 
-  Future<List<Map<String, dynamic>>> checkIfExists(int id, String table) async {
+  Future<List<Map<String, dynamic>>> selectStudentInfo(int id, String table) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -611,7 +609,7 @@ class MySqlConnectionHandler {
         session = :session,  
         date = :date,          
         activity = :activity
-      WHERE id_student = :id;       
+      WHERE id = :id;       
     ''',
           {
             'session': session,

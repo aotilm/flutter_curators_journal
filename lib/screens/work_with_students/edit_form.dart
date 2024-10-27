@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,23 +9,31 @@ import '../../../MySqlConnection.dart';
 class EditForm extends StatefulWidget {
   EditForm({
     required this.id,
+    this.idTable,
     required this.firstName,
     required this.lastName,
     required this.middleName,
+    required this.selectedValue
   });
 
   final int id;
+  final int? idTable;
   final String firstName;
   final String lastName;
   final String middleName;
-
+  String selectedValue;
 
   @override
   EditFormState createState() => EditFormState();
 }
 
 class EditFormState extends State<EditForm> {
-  String? selectedValue;
+  // String? selectedValue;
+  @override
+  void initState() {
+    super.initState();
+    returnFormFields();
+  }
 
   DateTime? selectedDate1;
   DateTime? selectedDate2;
@@ -52,29 +62,28 @@ class EditFormState extends State<EditForm> {
     fieldController5.clear();
   }
   Widget getFormContent(){
-    if(selectedValue == editForms[0]){
+    if(widget.selectedValue == editForms[0]){
       return getGenInfoForm();
     }
-    if(selectedValue == editForms[1]){
+    if(widget.selectedValue == editForms[1]){
       return getEduDataForm();
     }
-    if(selectedValue == editForms[2]){
+    if(widget.selectedValue == editForms[2]){
       return getArmyServForm();
     }
-    if(selectedValue == editForms[3]){
+    if(widget.selectedValue == editForms[3]){
       return getJobActivityForm();
     }
-    if(selectedValue == editForms[4]){
+    if(widget.selectedValue == editForms[4]){
       return getParentsInfoForm();
     }
-
-    if(selectedValue == editForms[5]){
+    if(widget.selectedValue == editForms[5]){
       return getSocialActivityForm();
     }
-    if(selectedValue == editForms[6]){
+    if(widget.selectedValue == editForms[6]){
       return getCircleActivityForm();
     }
-    if(selectedValue == editForms[7]){
+    if(widget.selectedValue == editForms[7]){
       return getIndividualEscortForm();
     }
     else return Text('This page is in developing...');
@@ -83,16 +92,16 @@ class EditFormState extends State<EditForm> {
   Future<void> returnFormFields() async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    if(selectedValue == editForms[0]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'general_info');
+    if(widget.selectedValue == editForms[0]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'general_info');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['date'] ?? 'No ';
         fieldController3.text = records[0]['address'] ?? 'No ';
         fieldController2.text = records[0]['phone_number'] ?? 'No ';
       }
     }
-    if(selectedValue == editForms[1]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'education_data');
+    if(widget.selectedValue == editForms[1]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'education_data');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['end_date'] ?? 'No ';
         fieldController2.text = records[0]['average_score'] ?? 'No  ';
@@ -100,8 +109,8 @@ class EditFormState extends State<EditForm> {
       }
     }
 
-    if(selectedValue == editForms[2]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'service_in_army');
+    if(widget.selectedValue == editForms[2]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'service_in_army');
       if(records.isNotEmpty){
         fieldController2.text = records[0]['end_date'] ?? 'No ';
         fieldController1.text = records[0]['start_date'] ?? 'No ';
@@ -109,8 +118,8 @@ class EditFormState extends State<EditForm> {
       }
     }
 
-    if(selectedValue == editForms[3]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'job_activity');
+    if(widget.selectedValue == editForms[3]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'job_activity');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['start_date'] ?? 'No ';
         fieldController2.text = records[0]['end_date'] ?? 'No ';
@@ -119,8 +128,8 @@ class EditFormState extends State<EditForm> {
         fieldController5.text = records[0]['phone_number'] ?? 'No ';
       }
     }
-    if(selectedValue == editForms[4]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'parents_info');
+    if(widget.selectedValue == editForms[4]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'parents_info');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['father'] ?? 'No ';
         fieldController2.text = records[0]['fathers_phone'] ?? 'No ';
@@ -130,17 +139,31 @@ class EditFormState extends State<EditForm> {
       }
     }
 
-    if(selectedValue == editForms[5]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'social_activity');
+    if(widget.selectedValue == editForms[5]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'social_activity');
       if(records.isNotEmpty){
-        fieldController1.text = records[0]['session'] ?? 'No ';
-        fieldController2.text = records[0]['date'] ?? 'No ';
-        fieldController3.text = records[0]['activity'] ?? 'No ';
+        for(var record in records){
+          print(record['id']);
+
+          if(record['id'] == widget.idTable.toString()){
+            fieldController1.text = record['session'] ?? 'No ';
+            fieldController2.text = record['date'] ?? 'No ';
+            fieldController3.text = record['activity'] ?? 'No ';
+          }
+        }
       }
+      print(widget.idTable);
+
+      // if(records.isNotEmpty){
+      //   fieldController1.text = records[0]['session'] ?? 'No ';
+      //   fieldController2.text = records[0]['date'] ?? 'No ';
+      //   fieldController3.text = records[0]['activity'] ?? 'No ';
+      // }
+
     }
 
-    if(selectedValue == editForms[6]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'circle_activity');
+    if(widget.selectedValue == editForms[6]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'circle_activity');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['session'] ?? 'No ';
         fieldController2.text = records[0]['circle_name'] ?? 'No ';
@@ -148,8 +171,8 @@ class EditFormState extends State<EditForm> {
       }
     }
 
-    if(selectedValue == editForms[7]){
-      List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, 'individual_escort');
+    if(widget.selectedValue == editForms[7]){
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'individual_escort');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['session'] ?? 'No ';
         fieldController2.text = records[0]['date'] ?? 'No ';
@@ -169,7 +192,11 @@ class EditFormState extends State<EditForm> {
       content: Text(message),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context, true);
+
+          },
           child: const Text('OK'),
         ),
       ],
@@ -309,8 +336,9 @@ class EditFormState extends State<EditForm> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.add),
-                    Text('Оновити дані'),
+                    Icon(Icons.save),
+                    SizedBox(width: 5),
+                    Text('Зберегти дані'),
                   ],
                 ),
               ),
@@ -323,7 +351,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateGenInfo(String phone_number, String date, String address) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "general_info");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "general_info");
 
     if (records.isNotEmpty) {
       await connHandler.updateGenInfo(widget.id, phone_number, date, address);
@@ -446,7 +474,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateEduData(String institutionName, String endDate, String averageScore) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "education_data");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "education_data");
 
     if (records.isNotEmpty) {
       await connHandler.updateEduData(widget.id, institutionName, endDate, averageScore);
@@ -573,7 +601,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateArmyServ(String unit, String endDate, String startDate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "service_in_army");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "service_in_army");
 
     if (records.isNotEmpty) {
       await connHandler.updateArmyServ(widget.id, startDate, endDate, unit);
@@ -744,7 +772,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateJobActivity(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "job_activity");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "job_activity");
 
     if (records.isNotEmpty) {
       await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
@@ -903,7 +931,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateParentsInfo(String father, String fathersPhone, String mother, String mothersPhone, String note) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "parents_info");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "parents_info");
 
     if (records.isNotEmpty) {
       await connHandler.updateParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
@@ -922,7 +950,7 @@ class EditFormState extends State<EditForm> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             Row(
+              Row(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                children: [
                  SizedBox(
@@ -975,7 +1003,6 @@ class EditFormState extends State<EditForm> {
                  ),
                ],
              ),
-
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(
@@ -1031,15 +1058,16 @@ class EditFormState extends State<EditForm> {
   Future<void> updateSocialActivity(int session, String date, String activity) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "social_activity");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "social_activity");
 
     if (records.isNotEmpty) {
-      await connHandler.updateSocialActivity(widget.id, session, date, activity);
+      await connHandler.updateSocialActivity(widget.idTable!, session, date, activity);
     } else if(records.isEmpty){
       print('Запис не знайдено.');
       await connHandler.insertSocialActivity(widget.id, session, date, activity);
     }
     await connHandler.close();
+    // Navigator.pop(context);
   }
 
   Widget getCircleActivityForm(){
@@ -1149,7 +1177,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateCircleActivity(int session, String circleName, String note) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "circle_activity");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "circle_activity");
 
     if (records.isNotEmpty) {
       await connHandler.updateCircleActivity(widget.id, session, circleName, note);
@@ -1277,7 +1305,7 @@ class EditFormState extends State<EditForm> {
   Future<void> updateIndividualEscort(int session, String date, String content) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.checkIfExists(widget.id, "individual_escort");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "individual_escort");
 
     if (records.isNotEmpty) {
       await connHandler.updateIndividualEscort(widget.id, session, date, content);
@@ -1295,42 +1323,46 @@ class EditFormState extends State<EditForm> {
         title: Text('Редагування даних студента'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Center(
-                  child: Text(
-                    '${widget.lastName} ${widget.firstName} ${widget.middleName} ${widget.id}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Center(
+                  //   child: Text(
+                  //     '${widget.lastName} ${widget.firstName} ${widget.middleName} ${widget.id}',
+                  //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  //   ),
+                  // ),
+                  DropdownButton<String>(
+                    hint: Text("Виберіть форму заповнення:"),
+                    value: widget.selectedValue,
+                    items: editForms.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        widget.selectedValue = newValue!;
+                        clearData();
+                        returnFormFields();
+                      });
+                    },
                   ),
-                ),
-                DropdownButton<String>(
-                  hint: Text("Виберіть форму заповнення:"),
-                  value: selectedValue,
-                  items: editForms.map((String item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedValue = newValue;
-                      clearData();
-                      returnFormFields();
-                    });
-                  },
-                ),
-                getFormContent()
 
-              ],
+                  getFormContent()
+
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      resizeToAvoidBottomInset: true,
     );
   }
 }

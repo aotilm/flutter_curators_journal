@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Goddamn journal',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
         cardTheme: CardTheme(
           // color: Theme.of(context).cardColor,
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         '/admin_work_with_students': (context) => AdminWorkWithStudents(),
         '/general_information': (context) => GeneralInformation(),
         '/activity': (context) => Activity(),
-        '/edit_form': (context) => EditForm(id: 1, firstName: 'Muravets', lastName: 'Illia', middleName: 'Andiryovich')
+        // '/edit_form': (context) => EditForm(id: 1, firstName: 'Muravets', lastName: 'Illia', middleName: 'Andiryovich')
       },
     );
   }

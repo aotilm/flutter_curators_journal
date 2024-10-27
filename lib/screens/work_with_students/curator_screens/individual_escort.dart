@@ -30,6 +30,7 @@ class _IndividualEscortState extends State<IndividualEscort> {
           session: record['session'] ?? 'no',
           date: record['date'] ?? 'No',
           content: record['content'] ?? 'No',
+          showName: true
       );
 
       dataCards.add(card);

@@ -31,6 +31,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
         firstName: record['first_name'] ?? 'No Name',
         lastName: record['second_name'] ?? 'No Second Name',
         middleName: record['middle_name'] ?? 'No Middle Name',
+        showName: true,
       );
 
       dataCards.add(card);
