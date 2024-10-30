@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  // final String _host = "192.168.0.109";
-  final String _host = "192.168.122.1";
+  final String _host = "192.168.0.109";
+  // final String _host = "192.168.122.1";
   // final String _host = "192.168.1.109";
 
   final int _port = 3306;
@@ -274,8 +274,83 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectEncouragement() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
 
+    List<Map<String, dynamic>> records = []; // List to store records
 
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               e.session, e.date, e.content
+        FROM students s 
+        JOIN encouragement e ON s.id = e.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectSocialPassport() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+               sp.session, sp.category, sp.start_date, sp.end_date, sp.note
+        FROM students s 
+        JOIN social_passport sp ON s.id = sp.id_student;
+      ''');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectWorkPlan() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = [];
+
+    try {
+      var result = await _connection!.execute(
+          'SELECT * FROM work_plan '
+      );
+
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+    return records;
+
+  }
 
   Future<List<Map<String, dynamic>>> selectStudentInfo(int id, String table) async {
     if (_connection == null) {
@@ -301,6 +376,7 @@ class MySqlConnectionHandler {
     return records;
 
   }
+
 
   Future<void> insertGenInfo(String phone, String date, String address, bool status, int id) async {
     if (_connection == null) {
@@ -549,7 +625,7 @@ class MySqlConnectionHandler {
         mother = :mother,  
         mothers_phone = :mothersPhone, 
         note = :note
-      WHERE id_student = :id;       
+      WHERE id = :id;       
     ''',
           {
             'father': father,
@@ -665,7 +741,7 @@ class MySqlConnectionHandler {
         session = :session,  
         circle_name = :circle_name,          
         note = :note
-      WHERE id_student = :id;       
+      WHERE id = :id;       
     ''',
           {
             'session': session,
@@ -721,7 +797,7 @@ class MySqlConnectionHandler {
         session = :session,  
         date = :date,          
         content = :content
-      WHERE id_student = :id;       
+      WHERE id = :id;       
     ''',
           {
             'session': session,
@@ -763,6 +839,187 @@ class MySqlConnectionHandler {
 
   }
 
+  Future<void> updateEncouragement(int id, int session, String date, String content) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE encouragement
+      SET
+        session = :session,  
+        date = :date,          
+        content = :content
+      WHERE id = :id;       
+    ''',
+          {
+            'session': session,
+            'date': date,
+            'content': content,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertEncouragement(int id, int session, String date, String content) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            encouragement (session, date, content, id_student) 
+            VALUES (:session, :date, :content, :id_student);
+         ''',
+          {
+            'session': session,
+            'date': date,
+            'content': content,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+  Future<void> updateSocialPassport(int id, int session, String category, String startDate, String endDate, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE social_passport
+      SET
+        session = :session,  
+        category = :category,
+        start_date = :start_date,
+        end_date = :end_date,
+        note = :note
+      WHERE id = :id;       
+    ''',
+          {
+            'session': session,
+            'category': category,
+            'start_date': startDate,
+            'end_date': endDate,
+            'note': note,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertSocialPassport(int id, int session, String category, String startDate, String endDate, String note) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            social_passport (session, category, start_date, end_date, note, id_student) 
+            VALUES (:session, :category, :start_date, :end_date, :note, :id_student);
+         ''',
+          {
+            'session': session,
+            'category': category,
+            'start_date': startDate,
+            'end_date': endDate,
+            'note': note,
+            'id_student': id,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+
+  Future<void> updateWorkPlan(int id, int session, String eventName, String executionDate, String executor, bool isDone, bool adminConfirmation) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      var result = await _connection!.execute(
+          ''' 
+      UPDATE work_plan
+      SET
+        session = :session,  
+        event_name = :event_name,
+        execution_date = :execution_date,
+        executor = :executor,
+        isDone = :isDone,
+        admin_confirmation = :admin_confirmation
+      WHERE id = :id;       
+    ''',
+          {
+            'session': session,
+            'event_name': eventName,
+            'execution_date': executionDate,
+            'executor': executor,
+            'isDone': isDone,
+            'admin_confirmation': adminConfirmation,
+            'id': id
+          }
+      );
+
+      print('Updated rows: ${result.affectedRows}');
+    } catch (e) {
+      print('Update query failed: $e');
+    }
+  }
+  Future<void> insertWorkPlan(int session, String eventName, String executionDate, String executor, bool isDone, bool adminConfirmation) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            work_plan (session, event_name, execution_date, executor, isDone, admin_confirmation) 
+           VALUES (:session, :event_name, :execution_date, :executor, :isDone, :admin_confirmation);
+         ''',
+          {
+            'session': session,
+            'event_name': eventName,
+            'execution_date': executionDate,
+            'executor': executor,
+            'isDone': isDone,
+            'admin_confirmation': adminConfirmation,
+          }
+      );
+
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
   // Функція для закриття з'єднання
   Future<void> close() async {
     if (_connection != null) {

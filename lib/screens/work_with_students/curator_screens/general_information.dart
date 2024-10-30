@@ -145,7 +145,8 @@ class _GeneralInformationState extends State<GeneralInformation> {
           mother: record['mother'] ?? 'No',
           mothers_phone: record['mothers_phone'] ?? 'No',
           note: record['note'] ?? '-',
-          showName: true
+          showName: true,
+          idTable: 0
       );
 
       dataCards.add(card);
@@ -282,7 +283,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
                     return Column(
                       children: snapshot.data!.map<Widget>((card) {
-                        return card.returnJobActivityData();
+                        return card.returnJobActivityData(context);
                       }).toList(),
                     );
                   },
@@ -314,7 +315,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
 
                     return Column(
                       children: snapshot.data!.map<Widget>((card) {
-                        return card.returnParentsInfoCards();
+                        return card.returnParentsInfoCards(context);
                       }).toList(),
                     );
                   },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
 import '../cards.dart';
 import '../../../MySqlConnection.dart';
+
 class IndividualEscort extends StatefulWidget {
   const IndividualEscort({super.key});
 
@@ -24,6 +25,7 @@ class _IndividualEscortState extends State<IndividualEscort> {
     for (var record in records) {
       final card = IndividualEscortCard(//
           id: int.parse(record['id'].toString()),
+          idActivity: 0,
           firstName: record['first_name'] ?? 'No Name',
           lastName: record['second_name'] ?? 'No Second Name',
           middleName: record['middle_name'] ?? 'No Middle Name',
@@ -64,7 +66,7 @@ class _IndividualEscortState extends State<IndividualEscort> {
 
                 return Column(
                   children: snapshot.data!.map<Widget>((card) {
-                    return card.returnCircleActivityCards();
+                    return card.returnIndividualEscortCard(context);
                   }).toList(),
                 );
               },

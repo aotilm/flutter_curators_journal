@@ -55,6 +55,7 @@ class _ActivityState extends State<Activity> {
         firstName: record['first_name'] ?? 'No Name',
         lastName: record['second_name'] ?? 'No Second Name',
         middleName: record['middle_name'] ?? 'No Middle Name',
+        idActivity: 0,
         session: record['session'] ?? 'no',
         circleName: record['circle_name'] ?? 'No',
         note: record['note'] ?? 'No',
@@ -121,7 +122,7 @@ class _ActivityState extends State<Activity> {
 
                 return Column(
                   children: snapshot.data!.map<Widget>((card) {
-                    return card.returnCircleActivityCards();
+                    return card.returnCircleActivityCards(context);
                   }).toList(),
                 );
               },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../MySqlConnection.dart';
 import 'cards.dart';
+import 'edit_form.dart';
 
 class WorkPlan extends StatefulWidget {
   const WorkPlan({super.key});
@@ -12,15 +14,51 @@ class WorkPlan extends StatefulWidget {
 class _WorkPlanState extends State<WorkPlan> {
   String? selectedValue;
   final List<String> sessions = ['1','2','3','4','5','6','7','8'];
+  Future<List<WorkPlanCard>> returnWorkPlanCards() async { //
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+
+    // Get the records
+    List<Map<String, dynamic>> records = await connHandler.selectWorkPlan(); //
+    List<WorkPlanCard> dataCards = [];//
+
+    for (var record in records) {
+      final card = WorkPlanCard(//
+        id: int.parse(record['id'].toString()),
+        session: int.parse(record['session'].toString()),
+        eventName: record['event_name'] ?? 'No',
+        executionDate: record['execution_date'] ?? 'No',
+        executor: record['executor'] ?? 'No',
+        isDone: record['isDone'] == "1",
+        adminConfirmation: record['admin_confirmation'] == "1",
+      );
+
+      dataCards.add(card);
+    }
+
+    await connHandler.close(); // Close the connection
+    return dataCards; // Return the list of GeneralDataCard objects
+  }
 
   @override
   Widget build(BuildContext context) {
-    var plan = WorkPlanCard(id: 1, session: 2, eventName: "eventName", executionDate: "executionDate", executor: "executor", isDone: true, adminConfirmation: false);
-    
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: (){},),
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: 0,
+                selectedValue: 'План роботи',
+                action: false,
+              ),
+            ),
+          );
+        }
+      ),
       body: Column(
         children: [
           Padding(
@@ -46,25 +84,24 @@ class _WorkPlanState extends State<WorkPlan> {
               ],
             ),
           ),
-          plan.returnCard(context)
-          // FutureBuilder<List<WorkPlanCard>>(
-          //   future: returnCards(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return CircularProgressIndicator();
-          //     } else if (snapshot.hasError) {
-          //       return Text('Error: ${snapshot.error}');
-          //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          //       return Text('No data found');
-          //     }
-          //
-          //     return Column(
-          //       children: snapshot.data!.map<Widget>((card) {
-          //         return card.returnCard(context);
-          //       }).toList(),
-          //     );
-          //   },
-          // ),
+          FutureBuilder<List<WorkPlanCard>>(
+            future: returnWorkPlanCards(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No data found');
+              }
+
+              return Column(
+                children: snapshot.data!.map<Widget>((card) {
+                  return card.returnWorkPlanCard(context);
+                }).toList(),
+              );
+            },
+          ),
         ],
       ),
     );

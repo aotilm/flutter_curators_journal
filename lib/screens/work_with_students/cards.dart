@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:test_journal/screens/work_with_students/all_student_info.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/all_student_info.dart';
 import 'package:test_journal/screens/work_with_students/edit_form.dart';
 
 import '../../MySqlConnection.dart';
@@ -104,9 +104,6 @@ class GeneralDataCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                firstName: firstName,
-                lastName: lastName,
-                middleName: middleName,
                 selectedValue: "Загальні дані",
               ),
             ),
@@ -232,9 +229,6 @@ class EducationDataCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                firstName: firstName,
-                lastName: lastName,
-                middleName: middleName,
                 selectedValue: "Дані про освіту",
               ),
             ),
@@ -346,9 +340,6 @@ class ArmyServiceDataCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                firstName: firstName,
-                lastName: lastName,
-                middleName: middleName,
                 selectedValue: "Служба в ЗСУ",
               ),
             ),
@@ -440,14 +431,22 @@ class JobActivityDataCard extends DataCardBase {
     showName: showName
   );
 
-  Card returnJobActivityData() {
+  Card returnJobActivityData(context) {
     return Card(
 
       child:
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print("$id");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                selectedValue: "Трудова діяльність",
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -536,6 +535,7 @@ class ParentsInfoDataCard extends DataCardBase {
   final String mother;
   final String mothers_phone;
   final String note;
+  final int idTable;
 
   ParentsInfoDataCard({
     required int id,
@@ -547,7 +547,8 @@ class ParentsInfoDataCard extends DataCardBase {
     required this.fathers_phone,
     required this.mother,
     required this.mothers_phone,
-    required this.note
+    required this.note,
+    required this.idTable
 
   }) : super(
     id: id,
@@ -557,14 +558,23 @@ class ParentsInfoDataCard extends DataCardBase {
     showName: showName
   );
 
-  Card returnParentsInfoCards() {
+  Card returnParentsInfoCards(context) {
     return Card(
 
       child:
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print("$id");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: idTable,
+                selectedValue: "Інформація про батьків",
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -637,16 +647,13 @@ class ParentsInfoDataCard extends DataCardBase {
                       ]
                   )
               ),
+              note.isNotEmpty ?
               Text.rich(
                   TextSpan(
-                      children: [
-                        TextSpan(
-                            text: 'Примітка: $note',
-                            style: TextStyle(fontStyle: FontStyle.italic)
-                        )
-                      ]
+                      text: 'Примітка: $note',
+                      style: TextStyle(fontStyle: FontStyle.italic)
                   )
-              )
+              ) : Container()
 
 
             ],
@@ -656,7 +663,6 @@ class ParentsInfoDataCard extends DataCardBase {
     );
   }
 }
-
 
 class SocialActivityCard extends DataCardBase {
   final int idActivity;
@@ -695,10 +701,8 @@ class SocialActivityCard extends DataCardBase {
               builder: (context) => EditForm(
                 id: id,
                 idTable: idActivity,
-                firstName: firstName,
-                lastName: lastName,
-                middleName: middleName,
                 selectedValue: "Громадська діяльність",
+                action: true,
               ),
             ),
           );
@@ -774,6 +778,7 @@ class CircleActivityCard extends DataCardBase  {
   final String session;
   final String circleName;
   final String note;
+  final int idActivity;
 
   CircleActivityCard({
     required int id,
@@ -784,6 +789,7 @@ class CircleActivityCard extends DataCardBase  {
     required this.session,
     required this.circleName,
     required this.note,
+    required this.idActivity
   }) : super(
     id: id,
     firstName: firstName,
@@ -792,14 +798,24 @@ class CircleActivityCard extends DataCardBase  {
     showName: showName
   );
 
-  Card returnCircleActivityCards(){
+  Card returnCircleActivityCards(context){
     return Card(
 
       child:
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print("$id");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: idActivity,
+                selectedValue: "Гурткова діяльність",
+                action: true,
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -847,6 +863,7 @@ class CircleActivityCard extends DataCardBase  {
                       ]
                   )
               ),
+              note.isNotEmpty ?
               Text.rich(
                   TextSpan(
                       children: [
@@ -857,7 +874,7 @@ class CircleActivityCard extends DataCardBase  {
                         TextSpan(text: '$note')
                       ]
                   )
-              ),
+              ) : Container()
             ],
           ),
         ),
@@ -870,6 +887,8 @@ class IndividualEscortCard extends DataCardBase {
   final String session;
   final String date;
   final String content;
+  final int idActivity;
+
 
   IndividualEscortCard({
     required int id,
@@ -880,6 +899,7 @@ class IndividualEscortCard extends DataCardBase {
     required this.session,
     required this.date,
     required this.content,
+    required this.idActivity
   }) : super(
     id: id,
     firstName: firstName,
@@ -888,51 +908,83 @@ class IndividualEscortCard extends DataCardBase {
     showName: showName
   );
 
-  Card returnCircleActivityCards(){
+  Card returnIndividualEscortCard(context){
     return Card(
 
       child:
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print("$id");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: idActivity,
+                selectedValue: "Індивідуальний супровід",
+                action: true,
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                'Запис №$id',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              showName ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$lastName $firstName $middleName',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    'Запис №$id',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                   ),
+                  SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$lastName $firstName $middleName',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
                 ],
+              ) : Container(),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Семестр №: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: '$session')
+                      ]
+                  )
               ),
-              SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      'Семестр №$session'
-                  ),
-                  Text(
-                      '$date'
-                  ),
-                ],
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Дата: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: date)
+                      ]
+                  )
               ),
-              Text(
-                  '$content'
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Зміст: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: content)
+                      ]
+                  )
               ),
-
-
             ],
           ),
         ),
@@ -940,6 +992,251 @@ class IndividualEscortCard extends DataCardBase {
     );
   }
 }
+
+class EncouragementCard extends DataCardBase {
+  final String session;
+  final String date;
+  final String content;
+  final int idActivity;
+
+
+  EncouragementCard({
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String middleName,
+    required bool showName,
+    required this.session,
+    required this.date,
+    required this.content,
+    required this.idActivity
+  }) : super(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      middleName: middleName,
+      showName: showName
+  );
+
+  Card returnEncouragementCard(context){
+    return Card(
+
+      child:
+      InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: idActivity,
+                selectedValue: "Заохочення",
+                action: true,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              showName ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Запис №$id',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$lastName $firstName $middleName',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                ],
+              ) : Container(),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Семестр №: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: '$session')
+                      ]
+                  )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Дата: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: date)
+                      ]
+                  )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Зміст: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: content)
+                      ]
+                  )
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SocialPassportCard extends DataCardBase {
+  final String session;
+  final String category;
+  final String startDate;
+  final String endDate;
+  final String note;
+
+  final int idActivity;
+
+
+  SocialPassportCard({
+    required int id,
+    required String firstName,
+    required String lastName,
+    required String middleName,
+    required bool showName,
+    required this.session,
+    required this.category,
+    required this.startDate,
+    required this.endDate,
+    required this.note,
+    required this.idActivity
+  }) : super(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      middleName: middleName,
+      showName: showName
+  );
+
+  Card returnSocialPassportCard(context){
+    return Card(
+
+      child:
+      InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: idActivity,
+                selectedValue: "Соціальний паспорт",
+                action: true,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              showName ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Запис №$id',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$lastName $firstName $middleName',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                ],
+              ) : Container(),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Семестр №: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: '$session')
+                      ]
+                  )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Категорія: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: category)
+                      ]
+                  )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Дата початку: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: startDate)
+                      ]
+                  )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Дата кінця: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: endDate)
+                      ]
+                  )
+              ),
+              note.isNotEmpty ?
+              Text.rich(
+                  TextSpan(
+                      text: 'Примітка: $note',
+                      style: TextStyle(fontStyle: FontStyle.italic)
+                  )
+              ) : Container()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 
 class WorkPlanCard {
   final int id;
@@ -960,22 +1257,23 @@ class WorkPlanCard {
     required this.adminConfirmation
   });
 
-  Card returnCard(BuildContext context) {
+  Card returnWorkPlanCard(BuildContext context) {
     return Card(
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => EditForm(
-          //       id: id,
-          //       firstName: firstName,
-          //       lastName: lastName,
-          //       middleName: middleName,
-          //     ),
-          //   ),
-          // );
+          !adminConfirmation ?
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditForm(
+                id: id,
+                idTable: id,
+                selectedValue: 'План роботи',
+                action: true,
+              ),
+            ),
+          ): null;
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -1002,37 +1300,45 @@ class WorkPlanCard {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 6),
-              Text(
-                'Дата виконання :$executionDate',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 3),
-              Text(
-                'Виконавець :$executor',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Cтатус виконання: ',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                      ),
-                      isDone ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Підтвердження: ',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                      ),
-                      adminConfirmation ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
-                    ],
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Дата виконання: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: executionDate)
+                      ]
                   )
+              ),
+              Text.rich(
+                  TextSpan(
+                      children: [
+                        TextSpan(
+                            text: 'Виконавець: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        TextSpan(text: executor)
+                      ]
+                  )
+              ),
+              SizedBox(height: 6),
+              Row(
+                children: [
+                  Text(
+                    'Підтвердження від адміністратора: ',
+                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
+                  adminConfirmation ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Cтатус виконання заходу: ',
+                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
+                  isDone ? Icon(Icons.done, color: Colors.green) : Icon(Icons.close, color: Colors.red)
                 ],
               )
             ],

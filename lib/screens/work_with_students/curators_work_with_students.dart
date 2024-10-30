@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/encouragement.dart';
 import 'package:test_journal/screens/work_with_students/curator_screens/individual_escort.dart';
+import 'package:test_journal/screens/work_with_students/curator_screens/social_passport.dart';
 import 'package:test_journal/screens/work_with_students/work_plan.dart';
 
 import '../../MySqlConnection.dart';
@@ -259,6 +261,10 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
         return Activity();
       case 3:
         return IndividualEscort();
+      case 4:
+        return Encouragement();
+      case 5:
+        return SocialPassport();
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
