@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:mysql_client/mysql_client.dart';
 
 class MySqlConnectionHandler {
-  final String _host = "192.168.0.109";
-  // final String _host = "192.168.122.1";
+  // final String _host = "192.168.0.109";
+  final String _host = "192.168.122.1";
   // final String _host = "192.168.1.109";
 
   final int _port = 3306;

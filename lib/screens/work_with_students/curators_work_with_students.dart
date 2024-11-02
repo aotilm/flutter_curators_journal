@@ -166,91 +166,88 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
           ),
         ],
       ),
-      body: Scaffold(
-        body: <Widget>[
-          DefaultTabController(
-            length: 2,
-            child: Column(
-              children: [
-                TabBar(
-                  // labelColor: Colors.blue, // Колір тексту активної вкладки
-                  // unselectedLabelColor: Colors.grey, // Колір тексту неактивних вкладок
-                  // indicatorColor: Colors.blue, // Колір індикатора активної вкладки
-                  tabs: [
-                    Tab(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.people),
-                          SizedBox(width: 8),
-                          Text("Усі студенти"),
-                        ],
-                      ),
+      body:  <Widget>[
+        DefaultTabController(
+          length: 2,
+          child: Column(
+            children: [
+              TabBar(
+                // labelColor: Colors.blue, // Колір тексту активної вкладки
+                // unselectedLabelColor: Colors.grey, // Колір тексту неактивних вкладок
+                // indicatorColor: Colors.blue, // Колір індикатора активної вкладки
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.people),
+                        SizedBox(width: 8),
+                        Text("Усі студенти"),
+                      ],
                     ),
+                  ),
 
-                    Tab(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.people),
-                          SizedBox(width: 8),
-                          Text("Розширенна"),
-                        ],
-                      ),
-                    )
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.people),
+                        SizedBox(width: 8),
+                        Text("Розширенна"),
+                      ],
+                    ),
+                  )
 
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    // Text('усі студікі'),
+                    Column(
+                      children: [
+                        Padding(
+                          padding:  const EdgeInsets.only(top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'тут буде група студентів куратора',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
+
+                        FutureBuilder<List<DataCardBase>>(
+                          future: returnCards(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Text('No data found');
+                            }
+
+                            return Column(
+                              children: snapshot.data!.map<Widget>((card) {
+                                return card.returnCard(context);
+                              }).toList(),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    _getBodyContent(),
                   ],
                 ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      // Text('усі студікі'),
-                      Column(
-                        children: [
-                          Padding(
-                            padding:  const EdgeInsets.only(top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'тут буде група студентів куратора',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-
-                          FutureBuilder<List<DataCardBase>>(
-                            future: returnCards(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return Text('No data found');
-                              }
-
-                              return Column(
-                                children: snapshot.data!.map<Widget>((card) {
-                                  return card.returnCard(context);
-                                }).toList(),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      _getBodyContent(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          WorkPlan(),
-        ][currentPageIndex]
-
-      ),
+        ),
+        WorkPlan(),
+      ][currentPageIndex]
     );
   }
   Widget _getBodyContent() {
