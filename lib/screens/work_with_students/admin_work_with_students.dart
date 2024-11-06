@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_journal/screens/work_with_students/admin_screens/students/students.dart';
+import 'package:test_journal/screens/work_with_students/admin_screens/students/groups.dart';
 
 class AdminWorkWithStudents extends StatefulWidget {
   const AdminWorkWithStudents({super.key});
@@ -47,7 +47,7 @@ class _AdminWorkWithStudentsState extends State<AdminWorkWithStudents> {
       ),
 
       body: <Widget>[
-        Students(),
+        Groups(),
         Text('2'),
         Text('3'),
       ][currentPageIndex]

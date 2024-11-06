@@ -6,11 +6,14 @@ import 'package:test_journal/screens/work_with_students/curator_screens/social_p
 import 'package:test_journal/screens/work_with_students/work_plan.dart';
 
 import '../../MySqlConnection.dart';
-import 'cards.dart';
+export 'cards/cards.dart';
+import 'cards/data_card_base.dart';
 import 'curator_screens/general_information.dart';
 
 class CuratorsWorkWithStudents extends StatefulWidget {
-  const CuratorsWorkWithStudents({super.key});
+  const CuratorsWorkWithStudents({super.key, required this.group});
+
+  final String group;
 
   @override
   State<CuratorsWorkWithStudents> createState() => _CuratorsWorkWithStudentsState();
@@ -19,12 +22,13 @@ class CuratorsWorkWithStudents extends StatefulWidget {
 class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   int selectedPage = 0 ;
   int currentPageIndex = 0;
+  // String group = "2-КТ-21";
   Future<List<DataCardBase>> returnCards() async { //
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentData(); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentData(widget.group); //
     List<DataCardBase> dataCards = [];//
 
     for (var record in records) {
@@ -46,6 +50,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("Робота з студентами",
         ),
@@ -203,46 +208,36 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    // Text('усі студікі'),
-                    Column(
-                      children: [
-                        Padding(
-                          padding:  const EdgeInsets.only(top: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'тут буде група студентів куратора',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          // Ваші інші елементи
+                          FutureBuilder<List<DataCardBase>>(
+                            future: returnCards(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Text('No data found');
+                              }
 
-                        FutureBuilder<List<DataCardBase>>(
-                          future: returnCards(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Text('No data found');
-                            }
-
-                            return Column(
-                              children: snapshot.data!.map<Widget>((card) {
-                                return card.returnCard(context);
-                              }).toList(),
-                            );
-                          },
-                        ),
-                      ],
+                              return Column(
+                                children: snapshot.data!.map<Widget>((card) {
+                                  return card.returnCard(context);
+                                }).toList(),
+                              );
+                            },
+                          )
+                        ],
+                      ),
                     ),
                     _getBodyContent(),
                   ],
                 ),
-              ),
+              )
+
             ],
           ),
         ),

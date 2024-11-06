@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
 
 import '../../../MySqlConnection.dart';
-import '../cards.dart';
+import '../cards/cards.dart';
 
 class SocialPassport extends StatefulWidget {
   const SocialPassport({super.key});

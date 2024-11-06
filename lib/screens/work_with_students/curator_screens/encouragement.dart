@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
-import 'package:test_journal/screens/work_with_students/cards.dart';
+import 'package:test_journal/screens/work_with_students/cards/cards.dart';
 
 import '../../../MySqlConnection.dart';
 

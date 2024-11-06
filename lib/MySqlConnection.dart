@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:mysql_client/mysql_client.dart';
+import 'package:test_journal/screens/work_with_students/admin_screens/table/student.dart';
 
 class MySqlConnectionHandler {
   // final String _host = "192.168.0.109";
@@ -169,7 +168,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectStudentData() async {
+  Future<List<Map<String, dynamic>>> selectStudentData(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -180,8 +179,12 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT * FROM students;
-      ''');
+        SELECT * FROM students where `group` = :group;
+      ''',
+        {
+          'group': group,
+        }
+      );
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -377,6 +380,57 @@ class MySqlConnectionHandler {
 
   }
 
+  Future<List<Map<String, dynamic>>> selectGroups() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = [];
+
+    try {
+      var result = await _connection!.execute(
+          'SELECT * FROM `groups`'
+      );
+
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+    return records;
+
+  }
+
+  Future<void> insertStudent(List<Student> studentsList) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      for(var student in studentsList){
+        var result = await _connection!.execute(
+            '''
+            INSERT INTO 
+            students (second_name, first_name, middle_name, `group`) 
+            VALUES (:second_name, :first_name, :middle_name, :group);
+         ''',
+            {
+              'second_name': student.secondName,
+              'first_name': student.firstName,
+              'middle_name': student.middleName,
+              'group': student.group
+            }
+        );
+        print(result.affectedRows);
+      }
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
 
   Future<void> insertGenInfo(String phone, String date, String address, bool status, int id) async {
     if (_connection == null) {

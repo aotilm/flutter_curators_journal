@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
-        '/work_with_students': (context) => CuratorsWorkWithStudents(),
+        '/work_with_students': (context) => CuratorsWorkWithStudents(group: '2-КТ-21',),
         '/admin_work_with_students': (context) => AdminWorkWithStudents(),
         '/general_information': (context) => GeneralInformation(),
         '/activity': (context) => Activity(),

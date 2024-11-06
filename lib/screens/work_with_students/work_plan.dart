@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../MySqlConnection.dart';
-import 'cards.dart';
+import 'cards/cards.dart';
 import 'edit_form.dart';
 
 class WorkPlan extends StatefulWidget {

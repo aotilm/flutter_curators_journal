@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
-import '../cards.dart';
+import '../cards/cards.dart';
 import '../../../MySqlConnection.dart';
 class Activity extends StatefulWidget {
   const Activity({super.key});
