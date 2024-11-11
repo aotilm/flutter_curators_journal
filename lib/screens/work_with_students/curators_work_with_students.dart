@@ -20,9 +20,10 @@ class CuratorsWorkWithStudents extends StatefulWidget {
 }
 
 class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
-  int selectedPage = 0 ;
+  int selectedPage = 1 ;
   int currentPageIndex = 0;
   // String group = "2-КТ-21";
+  final List<String> pages = ['Загальні відомості', 'Громадська та гурткова діяльність', 'Індивідуальний супровід' ,'Заохочення', 'Соціальний паспорт'];
   Future<List<DataCardBase>> returnCards() async { //
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
@@ -233,7 +234,36 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
                         ],
                       ),
                     ),
-                    _getBodyContent(),
+                    Column(
+                      children: [
+                        DropdownButton<String>(
+                          hint: Text("Виберіть сторінку:"),
+                          value: pages[selectedPage - 1],
+                          items: pages.map((String item) {
+                            return DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedPage = pages.indexOf(newValue!) + 1;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                _getBodyContent(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+
+
                   ],
                 ),
               )
@@ -248,13 +278,13 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
   Widget _getBodyContent() {
     switch (selectedPage) {
       case 1:
-        return GeneralInformation();
+        return GeneralInformation(group: widget.group,);
       case 2:
-        return Activity();
+        return Activity(group: widget.group,);
       case 3:
-        return IndividualEscort();
+        return IndividualEscort(group: widget.group,);
       case 4:
-        return Encouragement();
+        return Encouragement(group: widget.group,);
       case 5:
         return SocialPassport();
       default:

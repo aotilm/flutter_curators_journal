@@ -3,7 +3,9 @@ import 'package:accordion/accordion.dart';
 import '../cards/cards.dart';
 import '../../../MySqlConnection.dart';
 class Activity extends StatefulWidget {
-  const Activity({super.key});
+  const Activity({super.key, required this.group});
+
+  final String group;
 
   @override
   State<Activity> createState() => _ActivityState();
@@ -18,7 +20,7 @@ class _ActivityState extends State<Activity> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectSocialActivity(); //
+    List<Map<String, dynamic>> records = await connHandler.selectSocialActivity(widget.group); //
     List<SocialActivityCard> dataCards = [];//
 
     for (var record in records) {
@@ -46,7 +48,7 @@ class _ActivityState extends State<Activity> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectCircleActivity(); //
+    List<Map<String, dynamic>> records = await connHandler.selectCircleActivity(widget.group); //
     List<CircleActivityCard> dataCards = [];//
 
     for (var record in records) {
@@ -74,6 +76,8 @@ class _ActivityState extends State<Activity> {
   @override
   Widget build(BuildContext context) {
     return Accordion(
+        disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
           AccordionSection(
             contentVerticalPadding: 0,

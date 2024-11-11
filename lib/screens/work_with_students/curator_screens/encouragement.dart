@@ -6,8 +6,8 @@ import '../../../MySqlConnection.dart';
 
 
 class Encouragement extends StatefulWidget {
-  const Encouragement({super.key});
-
+  const Encouragement({super.key, required this.group});
+  final String group;
   @override
   State<Encouragement> createState() => _EncouragementState();
 }
@@ -21,7 +21,7 @@ class _EncouragementState extends State<Encouragement> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectEncouragement(); //
+    List<Map<String, dynamic>> records = await connHandler.selectEncouragement(widget.group); //
     List<EncouragementCard> dataCards = [];//
 
     for (var record in records) {
@@ -48,6 +48,8 @@ class _EncouragementState extends State<Encouragement> {
   @override
   Widget build(BuildContext context) {
     return Accordion(
+        disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
           AccordionSection(
             isOpen: true,

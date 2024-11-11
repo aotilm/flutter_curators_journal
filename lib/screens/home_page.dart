@@ -15,11 +15,6 @@ class _HomePageState extends State<HomePage> {
   // int _counter = 0;
   String name = '';
 
-
-  void workWithStudents(){
-    Navigator.pushNamed(context, '/work_with_students');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             FilledButton(
-                onPressed: workWithStudents,
+                onPressed: () => Navigator.pushNamed(context, '/work_with_students'),
                 child:
                 Text("Робота з студентами")
             ),

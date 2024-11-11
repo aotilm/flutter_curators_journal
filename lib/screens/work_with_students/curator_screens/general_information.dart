@@ -4,7 +4,9 @@ import '../cards/cards.dart';
 import '../../../MySqlConnection.dart';
 
 class GeneralInformation extends StatefulWidget {
-  const GeneralInformation({super.key});
+  const GeneralInformation({super.key, required this.group});
+
+  final String group;
 
   @override
   State<GeneralInformation> createState() => _GeneralInformationState();
@@ -22,7 +24,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectGenInfo();
+    List<Map<String, dynamic>> records = await connHandler.selectGenInfo(widget.group);
     List<GeneralDataCard> generalDataCards = [];
 
     for (var record in records) {
@@ -49,7 +51,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectEduData(); //
+    List<Map<String, dynamic>> records = await connHandler.selectEduData(widget.group); //
     List<EducationDataCard> educationDataCards = [];//
 
     for (var record in records) {
@@ -76,7 +78,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectServInArmyData(); //
+    List<Map<String, dynamic>> records = await connHandler.selectServInArmyData(widget.group); //
     List<ArmyServiceDataCard> dataCards = [];//
 
     for (var record in records) {
@@ -102,7 +104,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectJobActivityData(); //
+    List<Map<String, dynamic>> records = await connHandler.selectJobActivityData(widget.group); //
     List<JobActivityDataCard> dataCards = [];//
 
     for (var record in records) {
@@ -131,7 +133,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectParentsInfoData(); //
+    List<Map<String, dynamic>> records = await connHandler.selectParentsInfoData(widget.group); //
     List<ParentsInfoDataCard> dataCards = [];//
 
     for (var record in records) {
@@ -160,169 +162,172 @@ class _GeneralInformationState extends State<GeneralInformation> {
   @override
   Widget build(BuildContext context) {
     return Accordion(
+        disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
 
-          AccordionSection(
-            contentVerticalPadding: 0,
-            contentHorizontalPadding: 0,
-            headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon: const Icon(Icons.text_fields_rounded, color: Colors.white),
-            header: const Text('Загальні Дані', style: headerStyle),
-            content: Column(
-              children: [
-                FutureBuilder<List<GeneralDataCard>>(
-                  future: returnGeneralInfoCards(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No data found');
-                    }
 
-                    return Column(
-                      children: snapshot.data!.map<Widget>((card) {
-                        return card.returnGenInfoCard(context);
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10)
-              ],
-            )
+          AccordionSection(
+              contentVerticalPadding: 0,
+              contentHorizontalPadding: 0,
+              headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              leftIcon: const Icon(Icons.text_fields_rounded, color: Colors.white),
+              header: const Text('Загальні Дані', style: headerStyle),
+              content: Column(
+                children: [
+                  FutureBuilder<List<GeneralDataCard>>(
+                    future: returnGeneralInfoCards(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No data found');
+                      }
+
+                      return Column(
+                        children: snapshot.data!.map<Widget>((card) {
+                          return card.returnGenInfoCard(context);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
 
 
 
           ),
           AccordionSection(
             // isOpen: true,
-            contentVerticalPadding: 0,
-            contentHorizontalPadding: 0,
-            headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon:
-            const Icon(Icons.text_fields_rounded, color: Colors.white),
-            header: const Text('Дані про освіту', style: headerStyle),
-            // content: Text('hello'),
-            content: Column(
-              children: [
-                FutureBuilder<List<EducationDataCard>>(
-                  future: returnEducationDataCards(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No data found');
-                    }
+              contentVerticalPadding: 0,
+              contentHorizontalPadding: 0,
+              headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              leftIcon:
+              const Icon(Icons.text_fields_rounded, color: Colors.white),
+              header: const Text('Дані про освіту', style: headerStyle),
+              // content: Text('hello'),
+              content: Column(
+                children: [
+                  FutureBuilder<List<EducationDataCard>>(
+                    future: returnEducationDataCards(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No data found');
+                      }
 
-                    return Column(
-                      children: snapshot.data!.map<Widget>((card) {
-                        return card.returnEduData(context);
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10)
-              ],
-            )
+                      return Column(
+                        children: snapshot.data!.map<Widget>((card) {
+                          return card.returnEduData(context);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
           ),
           AccordionSection(
             // isOpen: true,
-            contentVerticalPadding: 0,
-            contentHorizontalPadding: 0,
-            headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon:
-            const Icon(Icons.text_fields_rounded, color: Colors.white),
-            header: const Text('Служба в ЗСУ', style: headerStyle),
-            content: Column(
-              children: [
-                FutureBuilder<List<ArmyServiceDataCard>>(
-                  future: returnServiceInArmyCards(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No data found');
-                    }
+              contentVerticalPadding: 0,
+              contentHorizontalPadding: 0,
+              headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              leftIcon:
+              const Icon(Icons.text_fields_rounded, color: Colors.white),
+              header: const Text('Служба в ЗСУ', style: headerStyle),
+              content: Column(
+                children: [
+                  FutureBuilder<List<ArmyServiceDataCard>>(
+                    future: returnServiceInArmyCards(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No data found');
+                      }
 
-                    return Column(
-                      children: snapshot.data!.map<Widget>((card) {
-                        return card.returnArmyData(context);
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10)
-              ],
-            )
+                      return Column(
+                        children: snapshot.data!.map<Widget>((card) {
+                          return card.returnArmyData(context);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
           ),
           AccordionSection(
             // isOpen: true,
-            contentVerticalPadding: 0,
-            contentHorizontalPadding: 0,
-            headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon:
-            const Icon(Icons.text_fields_rounded, color: Colors.white),
-            header: const Text('Трудова діяльність', style: headerStyle),
-            content: Column(
-              children: [
-                FutureBuilder<List<JobActivityDataCard>>(
-                  future: returnJobActivityCards(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No data found');
-                    }
+              contentVerticalPadding: 0,
+              contentHorizontalPadding: 0,
+              headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              leftIcon:
+              const Icon(Icons.text_fields_rounded, color: Colors.white),
+              header: const Text('Трудова діяльність', style: headerStyle),
+              content: Column(
+                children: [
+                  FutureBuilder<List<JobActivityDataCard>>(
+                    future: returnJobActivityCards(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No data found');
+                      }
 
-                    return Column(
-                      children: snapshot.data!.map<Widget>((card) {
-                        return card.returnJobActivityData(context);
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10)
-              ],
-            )
+                      return Column(
+                        children: snapshot.data!.map<Widget>((card) {
+                          return card.returnJobActivityData(context);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
           ),
           AccordionSection(
             // isOpen: true,
-            contentVerticalPadding: 0,
-            contentHorizontalPadding: 0,
-            headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            leftIcon:
-            const Icon(Icons.text_fields_rounded, color: Colors.white),
-            header: const Text('Інформація про батьків', style: headerStyle),
-            content: Column(
-              children: [
-                FutureBuilder<List<ParentsInfoDataCard>>(
-                  future: returnParentsInfoCards(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No data found');
-                    }
+              contentVerticalPadding: 0,
+              contentHorizontalPadding: 0,
+              headerPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              leftIcon:
+              const Icon(Icons.text_fields_rounded, color: Colors.white),
+              header: const Text('Інформація про батьків', style: headerStyle),
+              content: Column(
+                children: [
+                  FutureBuilder<List<ParentsInfoDataCard>>(
+                    future: returnParentsInfoCards(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No data found');
+                      }
 
-                    return Column(
-                      children: snapshot.data!.map<Widget>((card) {
-                        return card.returnParentsInfoCards(context);
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: 10)
-              ],
-            )
+                      return Column(
+                        children: snapshot.data!.map<Widget>((card) {
+                          return card.returnParentsInfoCards(context);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
           )
         ]
     );

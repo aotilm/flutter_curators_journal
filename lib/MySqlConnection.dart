@@ -31,23 +31,24 @@ class MySqlConnectionHandler {
     }
   }
 
-  Future<List<Map<String, dynamic>>> selectGenInfo() async {
+  Future<List<Map<String, dynamic>>> selectGenInfo(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
     }
 
-    List<Map<String, dynamic>> records = []; // List to store records
+    List<Map<String, dynamic>> records = [];
 
     try {
-      // var result = await _connection!.execute("SELECT * FROM general_info");
-
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, s.group, 
+        SELECT s.id, s.second_name, s.first_name, s.middle_name,
                gi.phone_number, gi.date, gi.address, gi.status
         FROM students s 
-        JOIN general_info gi ON s.id = gi.id_student;
-      ''');
+        JOIN general_info gi ON s.id = gi.id_student
+        WHERE s.group = :group;
+        ''',
+      {'group': group});
+
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -59,7 +60,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectEduData() async {
+  Future<List<Map<String, dynamic>>> selectEduData(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -68,14 +69,14 @@ class MySqlConnectionHandler {
     List<Map<String, dynamic>> records = []; // List to store records
 
     try {
-      // var result = await _connection!.execute("SELECT * FROM general_info");
-
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT s.id, s.second_name, s.first_name, s.middle_name,
                ed.average_score, ed.end_date, ed.institution_name
         FROM students s 
-        JOIN education_data ed ON s.id = ed.id_student;
-      ''');
+        JOIN education_data ed ON s.id = ed.id_student 
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -87,7 +88,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectServInArmyData() async {
+  Future<List<Map<String, dynamic>>> selectServInArmyData(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -101,8 +102,10 @@ class MySqlConnectionHandler {
         SELECT s.id, s.second_name, s.first_name, s.middle_name, 
                sia.start_date, sia.end_date, sia.unit
         FROM students s 
-        JOIN service_in_army sia ON s.id = sia.id_student;
-      ''');
+        JOIN service_in_army sia ON s.id = sia.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -114,7 +117,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectJobActivityData() async {
+  Future<List<Map<String, dynamic>>> selectJobActivityData(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -125,11 +128,13 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT s.id, s.second_name, s.first_name, s.middle_name,
                ja.end_date, ja.start_date, ja.place, ja.job_position, ja.phone_number
         FROM students s 
-        JOIN job_activity ja ON s.id = ja.id_student;
-      ''');
+        JOIN job_activity ja ON s.id = ja.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -141,7 +146,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectParentsInfoData() async {
+  Future<List<Map<String, dynamic>>> selectParentsInfoData(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -152,11 +157,13 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT s.id, s.second_name, s.first_name, s.middle_name, s.group,
                pi.father, pi.fathers_phone, pi.mother, pi.mothers_phone, pi.note
         FROM students s 
-        JOIN parents_info pi ON s.id = pi.id_student;
-      ''');
+        JOIN parents_info pi ON s.id = pi.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -196,7 +203,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectSocialActivity() async {
+  Future<List<Map<String, dynamic>>> selectSocialActivity(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -210,8 +217,10 @@ class MySqlConnectionHandler {
         SELECT s.id, s.second_name, s.first_name, s.middle_name, 
                sa.session, sa.date, sa.activity
         FROM students s 
-        JOIN social_activity sa ON s.id = sa.id_student;
-      ''');
+        JOIN social_activity sa ON s.id = sa.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -223,7 +232,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectCircleActivity() async {
+  Future<List<Map<String, dynamic>>> selectCircleActivity(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -237,8 +246,10 @@ class MySqlConnectionHandler {
         SELECT s.id, s.second_name, s.first_name, s.middle_name, 
                ca.session, ca.circle_name, ca.note
         FROM students s 
-        JOIN circle_activity ca ON s.id = ca.id_student;
-      ''');
+        JOIN circle_activity ca ON s.id = ca.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -250,7 +261,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectIndividualEscort() async {
+  Future<List<Map<String, dynamic>>> selectIndividualEscort(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -264,8 +275,10 @@ class MySqlConnectionHandler {
         SELECT s.id, s.second_name, s.first_name, s.middle_name, 
                ie.session, ie.date, ie.content
         FROM students s 
-        JOIN individual_escort ie ON s.id = ie.id_student;
-      ''');
+        JOIN individual_escort ie ON s.id = ie.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);
@@ -277,7 +290,7 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
-  Future<List<Map<String, dynamic>>> selectEncouragement() async {
+  Future<List<Map<String, dynamic>>> selectEncouragement(String group) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -291,8 +304,10 @@ class MySqlConnectionHandler {
         SELECT s.id, s.second_name, s.first_name, s.middle_name, 
                e.session, e.date, e.content
         FROM students s 
-        JOIN encouragement e ON s.id = e.id_student;
-      ''');
+        JOIN encouragement e ON s.id = e.id_student
+        WHERE s.group = :group;
+        ''',
+          {'group': group});
       for (final row in result.rows) {
         var record = row.assoc();
         records.add(record);

@@ -51,8 +51,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(),
         '/work_with_students': (context) => CuratorsWorkWithStudents(group: '2-КТ-21',),
         '/admin_work_with_students': (context) => AdminWorkWithStudents(),
-        '/general_information': (context) => GeneralInformation(),
-        '/activity': (context) => Activity(),
+        // '/general_information': (context) => GeneralInformation(),
+        // '/activity': (context) => Activity(),
         // '/edit_form': (context) => EditForm(id: 1, firstName: 'Muravets', lastName: 'Illia', middleName: 'Andiryovich')
       },
     );

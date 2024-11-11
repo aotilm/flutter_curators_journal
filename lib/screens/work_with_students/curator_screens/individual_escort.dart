@@ -4,7 +4,8 @@ import '../cards/cards.dart';
 import '../../../MySqlConnection.dart';
 
 class IndividualEscort extends StatefulWidget {
-  const IndividualEscort({super.key});
+  const IndividualEscort({super.key, required this.group});
+  final String group;
 
   @override
   State<IndividualEscort> createState() => _IndividualEscortState();
@@ -19,7 +20,7 @@ class _IndividualEscortState extends State<IndividualEscort> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectIndividualEscort(); //
+    List<Map<String, dynamic>> records = await connHandler.selectIndividualEscort(widget.group); //
     List<IndividualEscortCard> dataCards = [];//
 
     for (var record in records) {
@@ -45,6 +46,8 @@ class _IndividualEscortState extends State<IndividualEscort> {
   @override
   Widget build(BuildContext context) {
     return Accordion(
+        disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
           AccordionSection(
             isOpen: true,

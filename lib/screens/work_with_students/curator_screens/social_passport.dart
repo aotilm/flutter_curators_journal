@@ -49,6 +49,8 @@ class _SocialPassportState extends State<SocialPassport> {
   @override
   Widget build(BuildContext context) {
     return Accordion(
+        disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
           AccordionSection(
               isOpen: true,
