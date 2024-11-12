@@ -3,6 +3,7 @@ import '../curator_screens/all_student_info.dart';
 
 class DataCardBase {
   final int id;
+  final int? number;
   final String firstName;
   final String lastName;
   final String middleName;
@@ -11,6 +12,7 @@ class DataCardBase {
 
   DataCardBase({
     required this.id,
+    this.number,
     required this.firstName,
     required this.lastName,
     required this.middleName,
@@ -40,7 +42,7 @@ class DataCardBase {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Запис №$id',
+                'Запис №$number',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
               ),
               SizedBox(height: 3),

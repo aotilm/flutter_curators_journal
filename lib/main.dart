@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:test_journal/screens/home_page.dart';
+// import 'package:test_journal/screens/home_page.dart';
+import 'package:test_journal/screens/login_page.dart';
 import 'package:test_journal/screens/work_with_students/admin_work_with_students.dart';
-import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
-import 'package:test_journal/screens/work_with_students/curator_screens/general_information.dart';
+// import 'package:test_journal/screens/work_with_students/curator_screens/activity.dart';
+// import 'package:test_journal/screens/work_with_students/curator_screens/general_information.dart';
 import 'package:test_journal/screens/work_with_students/curators_work_with_students.dart';
-import 'package:test_journal/screens/work_with_students/edit_form.dart';
+// import 'package:test_journal/screens/work_with_students/edit_form.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -48,7 +49,8 @@ class MyApp extends StatelessWidget {
       ],
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(),
+        // '/': (context) => HomePage(),
+        '/': (context) => LoginPage(),
         '/work_with_students': (context) => CuratorsWorkWithStudents(group: '2-КТ-21',),
         '/admin_work_with_students': (context) => AdminWorkWithStudents(),
         // '/general_information': (context) => GeneralInformation(),

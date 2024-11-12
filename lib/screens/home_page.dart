@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mysql_client/mysql_client.dart';
-import 'package:test_journal/MySqlConnection.dart';
+// import 'package:mysql_client/mysql_client.dart';
+// import 'package:test_journal/MySqlConnection.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Робота з студентами")
             ),
             FilledButton(
+                // onPressed: () => Navigator.pushReplacementNamed(context, '/admin_work_with_students'),
                 onPressed: () => Navigator.pushNamed(context, '/admin_work_with_students'),
                 child:
                 Text("Робота з студентами Admin")

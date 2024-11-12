@@ -25,11 +25,11 @@ class _ActivityState extends State<Activity> {
 
     for (var record in records) {
       final card = SocialActivityCard(//
-          id: int.parse(record['id'].toString()),
+          id: 0,
           firstName: record['first_name'] ?? 'No Name',
           lastName: record['second_name'] ?? 'No Second Name',
           middleName: record['middle_name'] ?? 'No Middle Name',
-          idActivity: 0,
+          idActivity: int.parse(record['id'].toString()),
           session: record['session'] ?? 'no',
           date: record['date'] ?? 'No',
           activity: record['activity'] ?? 'No',

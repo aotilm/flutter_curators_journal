@@ -31,16 +31,17 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
     // Get the records
     List<Map<String, dynamic>> records = await connHandler.selectStudentData(widget.group); //
     List<DataCardBase> dataCards = [];//
-
+    int recordNumber = 1;
     for (var record in records) {
       final card = DataCardBase(//
         id: int.parse(record['id'].toString()),
+        number: recordNumber,
         firstName: record['first_name'] ?? 'No Name',
         lastName: record['second_name'] ?? 'No Second Name',
         middleName: record['middle_name'] ?? 'No Middle Name',
         showName: true,
       );
-
+      recordNumber++;
       dataCards.add(card);
     }
 
@@ -56,101 +57,102 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
         title: Text("Робота з студентами",
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
-            color: Colors.white,
-            onPressed: () {
-              Scaffold.of(context).openDrawer(); // Open the drawer with the new context
-            },
-          ),
-        ),
+        // leading: Builder(
+        //   builder: (context) => IconButton(
+        //     icon: Icon(Icons.menu),
+        //     color: Colors.white,
+        //     onPressed: () {
+        //       Scaffold.of(context).openDrawer(); // Open the drawer with the new context
+        //     },
+        //   ),
+        // ),
+
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary
-              ),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    // backgroundImage: ,
-                    child: Icon(Icons.account_circle, size: 70,),
-                    radius: 40,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                      'Призвіще та Імя',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white
-                    ),
-                  )
-                ],
-              )
-            ),
-            ListTile(
-              leading: const Icon(Icons.accessibility),
-              title: const Text('Загальні відомості'),
-              onTap: (){
-                setState(() {
-                  selectedPage = 1;
-                  Navigator.pop(context);
-                });
-              },
-
-            ),
-
-            ListTile(
-                leading: const Icon(Icons.accessibility),
-                title: const Text('Громадська та гурткова діяльність'),
-                onTap: (){
-                  setState(() {
-                    selectedPage = 2;
-                    Navigator.pop(context);
-                  });
-                }
-            ),
-
-            ListTile(
-                leading: const Icon(Icons.accessibility),
-                title: const Text('Індивідуальний супровід'),
-                onTap: (){
-                  setState(() {
-                    selectedPage = 3;
-                    Navigator.pop(context);
-                  });
-                }
-            ),
-
-            ListTile(
-                leading: const Icon(Icons.accessibility),
-                title: const Text('Заохочення'),
-                onTap: (){
-                  setState(() {
-                    selectedPage = 4;
-                    Navigator.pop(context);
-                  });
-                }
-            ),
-
-            ListTile(
-                leading: const Icon(Icons.accessibility),
-                title: const Text('Соціальний паспорт'),
-                onTap: (){
-                  setState(() {
-                    selectedPage = 5;
-                    Navigator.pop(context);
-                  });
-                }
-            ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //        DrawerHeader(
+      //         decoration: BoxDecoration(
+      //           color: Theme.of(context).colorScheme.primary
+      //         ),
+      //         child: Column(
+      //           children: [
+      //             CircleAvatar(
+      //               // backgroundImage: ,
+      //               child: Icon(Icons.account_circle, size: 70,),
+      //               radius: 40,
+      //             ),
+      //             SizedBox(height: 10),
+      //             Text(
+      //                 'Призвіще та Імя',
+      //               style: TextStyle(
+      //                 fontSize: 18,
+      //                 fontWeight: FontWeight.w500,
+      //                 color: Colors.white
+      //               ),
+      //             )
+      //           ],
+      //         )
+      //       ),
+      //       ListTile(
+      //         leading: const Icon(Icons.accessibility),
+      //         title: const Text('Загальні відомості'),
+      //         onTap: (){
+      //           setState(() {
+      //             selectedPage = 1;
+      //             Navigator.pop(context);
+      //           });
+      //         },
+      //
+      //       ),
+      //
+      //       ListTile(
+      //           leading: const Icon(Icons.accessibility),
+      //           title: const Text('Громадська та гурткова діяльність'),
+      //           onTap: (){
+      //             setState(() {
+      //               selectedPage = 2;
+      //               Navigator.pop(context);
+      //             });
+      //           }
+      //       ),
+      //
+      //       ListTile(
+      //           leading: const Icon(Icons.accessibility),
+      //           title: const Text('Індивідуальний супровід'),
+      //           onTap: (){
+      //             setState(() {
+      //               selectedPage = 3;
+      //               Navigator.pop(context);
+      //             });
+      //           }
+      //       ),
+      //
+      //       ListTile(
+      //           leading: const Icon(Icons.accessibility),
+      //           title: const Text('Заохочення'),
+      //           onTap: (){
+      //             setState(() {
+      //               selectedPage = 4;
+      //               Navigator.pop(context);
+      //             });
+      //           }
+      //       ),
+      //
+      //       ListTile(
+      //           leading: const Icon(Icons.accessibility),
+      //           title: const Text('Соціальний паспорт'),
+      //           onTap: (){
+      //             setState(() {
+      //               selectedPage = 5;
+      //               Navigator.pop(context);
+      //             });
+      //           }
+      //       ),
+      //     ],
+      //   ),
+      // ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -212,7 +214,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
                     SingleChildScrollView(
                       child: Column(
                         children: [
-                          // Ваші інші елементи
+                          Text('Група ${widget.group}'),
                           FutureBuilder<List<DataCardBase>>(
                             future: returnCards(),
                             builder: (context, snapshot) {

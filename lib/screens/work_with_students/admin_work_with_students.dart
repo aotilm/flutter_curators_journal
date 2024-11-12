@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/work_with_students/admin_screens/students/groups.dart';
+import 'package:test_journal/screens/work_with_students/work_plan.dart';
 
 class AdminWorkWithStudents extends StatefulWidget {
   const AdminWorkWithStudents({super.key});
@@ -36,7 +37,7 @@ class _AdminWorkWithStudentsState extends State<AdminWorkWithStudents> {
           NavigationDestination(
             selectedIcon: Icon(Icons.person, color: Colors.white,),
             icon: Icon(Icons.person),
-            label: 'Куратори',
+            label: 'Викладачі',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.list_alt, color: Colors.white,),
@@ -49,7 +50,7 @@ class _AdminWorkWithStudentsState extends State<AdminWorkWithStudents> {
       body: <Widget>[
         Groups(),
         Text('2'),
-        Text('3'),
+        WorkPlan(),
       ][currentPageIndex]
     );
   }

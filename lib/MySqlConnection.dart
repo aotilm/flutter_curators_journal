@@ -2,8 +2,8 @@ import 'package:mysql_client/mysql_client.dart';
 import 'package:test_journal/screens/work_with_students/admin_screens/table/student.dart';
 
 class MySqlConnectionHandler {
-  // final String _host = "192.168.0.109";
-  final String _host = "192.168.122.1";
+  final String _host = "192.168.0.109";
+  // final String _host = "192.168.122.1";
   // final String _host = "192.168.1.109";
 
   final int _port = 3306;
@@ -30,6 +30,56 @@ class MySqlConnectionHandler {
       print('Error connecting to the database: $e');
     }
   }
+
+  Future<bool> loginUser(String user, String pass) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return false;
+    }
+
+    try {
+      var result = await _connection!.execute('''
+      SELECT * FROM curators WHERE email = :email AND password = :password;
+    ''', {
+        'email': user,
+        'password': pass,
+      });
+
+      return result.rows.isNotEmpty;
+    } catch (e) {
+      print('Select query failed: $e');
+      return false; // Повертає false у разі помилки
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> selectCuratorInfo(String user, String pass) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+      SELECT * FROM curators WHERE email = :email AND password = :password;
+    ''', {
+        'email': user,
+        'password': pass,
+      });
+
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
 
   Future<List<Map<String, dynamic>>> selectGenInfo(String group) async {
     if (_connection == null) {
@@ -186,7 +236,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT * FROM students where `group` = :group;
+        SELECT * FROM students where `group` = :group order by second_name asc;
       ''',
         {
           'group': group,
@@ -212,10 +262,10 @@ class MySqlConnectionHandler {
     List<Map<String, dynamic>> records = []; // List to store records
 
     try {
-
-      var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
-               sa.session, sa.date, sa.activity
+      // s.id,
+    var result = await _connection!.execute('''
+        SELECT s.second_name, s.first_name, s.middle_name, 
+               sa.id, sa.session, sa.date, sa.activity
         FROM students s 
         JOIN social_activity sa ON s.id = sa.id_student
         WHERE s.group = :group;
@@ -382,6 +432,30 @@ class MySqlConnectionHandler {
       var result = await _connection!.execute(
           'SELECT * FROM $table WHERE id_student = :id_student',
           {'id_student': id}
+      );
+
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+    return records;
+
+  }
+  Future<List<Map<String, dynamic>>> selectStudentInfo2(int id, String table) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = [];
+
+    try {
+      var result = await _connection!.execute(
+          'SELECT * FROM $table WHERE id = :id',
+          {'id': id}
       );
 
       for (final row in result.rows) {

@@ -322,6 +322,8 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
         },
       ),
       body: Accordion(
+        // disableScrolling: true,
+        scaleWhenAnimating: false,
         children: [
           // Загальні відомості
           AccordionSection(

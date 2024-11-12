@@ -152,15 +152,11 @@ class EditFormState extends State<EditForm> {
     }
 
     if(widget.selectedValue == editForms[5]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'social_activity');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo2(widget.idTable!, 'social_activity');
       if(records.isNotEmpty){
-        for(var record in records){
-          if(record['id'] == widget.idTable.toString()){
-            fieldController1.text = record['session'] ?? 'No ';
-            fieldController2.text = record['date'] ?? 'No ';
-            fieldController3.text = record['activity'] ?? 'No ';
-          }
-        }
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['date'] ?? 'No ';
+        fieldController3.text = records[0]['activity'] ?? 'No ';
       }
     }
 

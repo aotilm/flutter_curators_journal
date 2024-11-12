@@ -33,6 +33,8 @@ class SocialActivityCard extends DataCardBase {
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
+          print(id);
+          print(idActivity);
           final result = Navigator.push(
             context,
             MaterialPageRoute(

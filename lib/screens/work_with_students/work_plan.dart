@@ -59,50 +59,52 @@ class _WorkPlanState extends State<WorkPlan> {
           );
         }
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding:  const EdgeInsets.only(top: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton<String>(
-                  hint: Text("Виберіть семестр:"),
-                  value: selectedValue,
-                  items: sessions.map((String item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedValue = newValue;
-                    });
-                  },
-                )
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding:  const EdgeInsets.only(top: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DropdownButton<String>(
+                    hint: Text("Виберіть семестр:"),
+                    value: selectedValue,
+                    items: sessions.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedValue = newValue;
+                      });
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-          FutureBuilder<List<WorkPlanCard>>(
-            future: returnWorkPlanCards(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Text('No data found');
-              }
+            FutureBuilder<List<WorkPlanCard>>(
+              future: returnWorkPlanCards(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No data found');
+                }
 
-              return Column(
-                children: snapshot.data!.map<Widget>((card) {
-                  return card.returnWorkPlanCard(context);
-                }).toList(),
-              );
-            },
-          ),
-        ],
+                return Column(
+                  children: snapshot.data!.map<Widget>((card) {
+                    return card.returnWorkPlanCard(context);
+                  }).toList(),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
