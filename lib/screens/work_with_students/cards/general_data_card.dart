@@ -39,6 +39,7 @@ class GeneralDataCard extends DataCardBase {
               builder: (context) => EditForm(
                 id: id,
                 selectedValue: "Загальні дані",
+                action: true,
               ),
             ),
           );

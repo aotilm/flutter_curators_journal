@@ -6,7 +6,6 @@ class CircleActivityCard extends DataCardBase  {
   final String session;
   final String circleName;
   final String note;
-  final int idActivity;
 
   CircleActivityCard({
     required int id,
@@ -17,7 +16,6 @@ class CircleActivityCard extends DataCardBase  {
     required this.session,
     required this.circleName,
     required this.note,
-    required this.idActivity
   }) : super(
       id: id,
       firstName: firstName,
@@ -38,7 +36,6 @@ class CircleActivityCard extends DataCardBase  {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                idTable: idActivity,
                 selectedValue: "Гурткова діяльність",
                 action: true,
               ),
@@ -51,6 +48,7 @@ class CircleActivityCard extends DataCardBase  {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               showName ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Запис №$id',

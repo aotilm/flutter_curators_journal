@@ -3,7 +3,6 @@ import '../edit_form.dart';
 import 'data_card_base.dart';
 
 class SocialActivityCard extends DataCardBase {
-  final int idActivity;
   final String session;
   final String date;
   final String activity;
@@ -14,7 +13,6 @@ class SocialActivityCard extends DataCardBase {
     required String lastName,
     required String middleName,
     required bool showName,
-    required this.idActivity,
     required this.session,
     required this.date,
     required this.activity,
@@ -33,14 +31,11 @@ class SocialActivityCard extends DataCardBase {
       InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
-          print(id);
-          print(idActivity);
           final result = Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                idTable: idActivity,
                 selectedValue: "Громадська діяльність",
                 action: true,
               ),

@@ -38,6 +38,7 @@ class EducationDataCard extends DataCardBase {
               builder: (context) => EditForm(
                 id: id,
                 selectedValue: "Дані про освіту",
+                action: true,
               ),
             ),
           );

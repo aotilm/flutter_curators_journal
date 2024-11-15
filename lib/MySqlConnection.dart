@@ -2,9 +2,9 @@ import 'package:mysql_client/mysql_client.dart';
 import 'package:test_journal/screens/work_with_students/admin_screens/table/student.dart';
 
 class MySqlConnectionHandler {
-  final String _host = "192.168.0.109";
-  // final String _host = "192.168.122.1";
-  // final String _host = "192.168.1.109";
+  // final String _host = "192.168.0.109";
+  final String _host = "192.168.122.1";
+  // final String _host = "192.168.1.10 9";
 
   final int _port = 3306;
   final String _userName = "root";
@@ -91,7 +91,7 @@ class MySqlConnectionHandler {
 
     try {
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name,
+        SELECT gi.id, s.second_name, s.first_name, s.middle_name,
                gi.phone_number, gi.date, gi.address, gi.status
         FROM students s 
         JOIN general_info gi ON s.id = gi.id_student
@@ -120,7 +120,7 @@ class MySqlConnectionHandler {
 
     try {
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name,
+        SELECT ed.id, s.second_name, s.first_name, s.middle_name,
                ed.average_score, ed.end_date, ed.institution_name
         FROM students s 
         JOIN education_data ed ON s.id = ed.id_student 
@@ -149,7 +149,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT sia.id, s.second_name, s.first_name, s.middle_name, 
                sia.start_date, sia.end_date, sia.unit
         FROM students s 
         JOIN service_in_army sia ON s.id = sia.id_student
@@ -178,7 +178,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name,
+        SELECT ja.id, s.second_name, s.first_name, s.middle_name,
                ja.end_date, ja.start_date, ja.place, ja.job_position, ja.phone_number
         FROM students s 
         JOIN job_activity ja ON s.id = ja.id_student
@@ -207,7 +207,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, s.group,
+        SELECT pi.id, s.second_name, s.first_name, s.middle_name, s.group,
                pi.father, pi.fathers_phone, pi.mother, pi.mothers_phone, pi.note
         FROM students s 
         JOIN parents_info pi ON s.id = pi.id_student
@@ -293,7 +293,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT ca.id, s.second_name, s.first_name, s.middle_name, 
                ca.session, ca.circle_name, ca.note
         FROM students s 
         JOIN circle_activity ca ON s.id = ca.id_student
@@ -322,7 +322,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT ie.id, s.second_name, s.first_name, s.middle_name, 
                ie.session, ie.date, ie.content
         FROM students s 
         JOIN individual_escort ie ON s.id = ie.id_student
@@ -351,7 +351,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT e.id, s.second_name, s.first_name, s.middle_name, 
                e.session, e.date, e.content
         FROM students s 
         JOIN encouragement e ON s.id = e.id_student
@@ -380,7 +380,7 @@ class MySqlConnectionHandler {
     try {
 
       var result = await _connection!.execute('''
-        SELECT s.id, s.second_name, s.first_name, s.middle_name, 
+        SELECT sp.id, s.second_name, s.first_name, s.middle_name, 
                sp.session, sp.category, sp.start_date, sp.end_date, sp.note
         FROM students s 
         JOIN social_passport sp ON s.id = sp.id_student;
@@ -420,7 +420,7 @@ class MySqlConnectionHandler {
 
   }
 
-  Future<List<Map<String, dynamic>>> selectStudentInfo(int id, String table) async {
+  Future<List<Map<String, dynamic>>> selectStudentInfoByStId(int id, String table) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -444,7 +444,7 @@ class MySqlConnectionHandler {
     return records;
 
   }
-  Future<List<Map<String, dynamic>>> selectStudentInfo2(int id, String table) async {
+  Future<List<Map<String, dynamic>>> selectStudentInfoByPkId(int id, String table) async {
     if (_connection == null) {
       print('No database connection found.');
       return [];
@@ -562,7 +562,7 @@ class MySqlConnectionHandler {
         phone_number = :phone_number,  
         date = :date,          
         address = :address        
-      WHERE id_student = :id;       
+      WHERE id = :id;       
       ''',
           {
             'phone_number': phoneNumber,
@@ -592,7 +592,7 @@ class MySqlConnectionHandler {
             institution_name = :institution_name,  
             end_date = :end_date,          
             average_score = :average_score        
-          WHERE id_student = :id;       
+          WHERE id = :id;       
       ''',
           {
             'institution_name': institutionName,
@@ -648,7 +648,7 @@ class MySqlConnectionHandler {
             start_date = :start_date,  
             end_date = :end_date,          
             unit = :unit        
-          WHERE id_student = :id;       
+          WHERE id = :id;       
       ''',
           {
             'start_date': startDate,
@@ -706,7 +706,7 @@ class MySqlConnectionHandler {
         place = :place,  -- Added missing comma
         job_position = :job_position,  -- Added missing comma
         phone_number = :phone_number
-      WHERE id_student = :id;       
+      WHERE id = :id;       
     ''',
           {
             'start_date': startDate,

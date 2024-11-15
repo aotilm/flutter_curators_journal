@@ -27,7 +27,6 @@ class _EncouragementState extends State<Encouragement> {
     for (var record in records) {
       final card = EncouragementCard(//
           id: int.parse(record['id'].toString()),
-          idActivity: 0,
           firstName: record['first_name'] ?? 'No Name',
           lastName: record['second_name'] ?? 'No Second Name',
           middleName: record['middle_name'] ?? 'No Middle Name',

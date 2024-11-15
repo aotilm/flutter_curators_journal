@@ -6,7 +6,6 @@ class IndividualEscortCard extends DataCardBase {
   final String session;
   final String date;
   final String content;
-  final int idActivity;
 
 
   IndividualEscortCard({
@@ -18,7 +17,6 @@ class IndividualEscortCard extends DataCardBase {
     required this.session,
     required this.date,
     required this.content,
-    required this.idActivity
   }) : super(
       id: id,
       firstName: firstName,
@@ -39,7 +37,6 @@ class IndividualEscortCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                idTable: idActivity,
                 selectedValue: "Індивідуальний супровід",
                 action: true,
               ),

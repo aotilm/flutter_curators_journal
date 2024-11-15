@@ -38,6 +38,7 @@ class ArmyServiceDataCard extends DataCardBase {
               builder: (context) => EditForm(
                 id: id,
                 selectedValue: "Служба в ЗСУ",
+                action: true,
               ),
             ),
           );

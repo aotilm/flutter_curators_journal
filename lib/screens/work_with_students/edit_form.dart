@@ -104,7 +104,7 @@ class EditFormState extends State<EditForm> {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
     if(widget.selectedValue == editForms[0]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'general_info');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'general_info');
       print(records.isEmpty);
       if(records.isNotEmpty){
         fieldController1.text = records[0]['date'] ?? 'No ';
@@ -113,7 +113,7 @@ class EditFormState extends State<EditForm> {
       }
     }
     if(widget.selectedValue == editForms[1]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'education_data');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'education_data');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['end_date'] ?? 'No ';
         fieldController2.text = records[0]['average_score'] ?? 'No  ';
@@ -122,7 +122,7 @@ class EditFormState extends State<EditForm> {
     }
 
     if(widget.selectedValue == editForms[2]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'service_in_army');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'service_in_army');
       if(records.isNotEmpty){
         fieldController2.text = records[0]['end_date'] ?? 'No ';
         fieldController1.text = records[0]['start_date'] ?? 'No ';
@@ -131,7 +131,7 @@ class EditFormState extends State<EditForm> {
     }
 
     if(widget.selectedValue == editForms[3]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'job_activity');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'job_activity');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['start_date'] ?? 'No ';
         fieldController2.text = records[0]['end_date'] ?? 'No ';
@@ -141,7 +141,7 @@ class EditFormState extends State<EditForm> {
       }
     }
     if(widget.selectedValue == editForms[4]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'parents_info');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'parents_info');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['father'] ?? '';
         fieldController2.text = records[0]['fathers_phone'] ?? '';
@@ -152,7 +152,7 @@ class EditFormState extends State<EditForm> {
     }
 
     if(widget.selectedValue == editForms[5]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo2(widget.idTable!, 'social_activity');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'social_activity');
       if(records.isNotEmpty){
         fieldController1.text = records[0]['session'] ?? 'No ';
         fieldController2.text = records[0]['date'] ?? 'No ';
@@ -161,60 +161,42 @@ class EditFormState extends State<EditForm> {
     }
 
     if(widget.selectedValue == editForms[6]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'circle_activity');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'circle_activity');
       if(records.isNotEmpty){
-        for(var record in records){
-          if(record['id'] == widget.idTable.toString()){
-            fieldController1.text = record['session'] ?? 'No ';
-            fieldController2.text = record['circle_name'] ?? 'No ';
-            fieldController3.text = record['note'] ?? 'No ';
-          }
-        }
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['circle_name'] ?? 'No ';
+        fieldController3.text = records[0]['note'] ?? 'No ';
       }
     }
 
     if(widget.selectedValue == editForms[7]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'individual_escort');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'individual_escort');
       if(records.isNotEmpty){
-        for(var record in records) {
-          if (record['id'] == widget.idTable.toString()) {
-            fieldController1.text = record['session'] ?? 'No ';
-            fieldController2.text = record['date'] ?? 'No ';
-            fieldController3.text = record['content'] ?? 'No ';
-          }
-        }
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['date'] ?? 'No ';
+        fieldController3.text = records[0]['content'] ?? 'No ';
       }
     }
 
     if(widget.selectedValue == editForms[8]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'encouragement');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'encouragement');
       print(records.isEmpty);
       if(records.isNotEmpty){
-        for(var record in records) {
-          if (record['id'] == widget.idTable.toString()) {
-            fieldController1.text = record['session'] ?? 'No ';
-            fieldController2.text = record['date'] ?? 'No ';
-            fieldController3.text = record['content'] ?? 'No ';
-          }
-        }
+        fieldController1.text = records[0]['session'] ?? 'No ';
+        fieldController2.text = records[0]['date'] ?? 'No ';
+        fieldController3.text = records[0]['content'] ?? 'No ';
       }
     }
 
     if(widget.selectedValue == editForms[9]){
-      List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'social_passport');
+      List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByPkId(widget.id, 'social_passport');
       print(records.isEmpty);
       if(records.isNotEmpty){
-        for(var record in records) {
-          if (record['id'] == widget.idTable.toString()) {
-            fieldController3.text = record['session'] ?? 'No ';
-            fieldController4.text = record['category'] ?? 'No ';
-            fieldController1.text = record['start_date'] ?? 'No ';
-            fieldController2.text = record['end_date'] ?? 'No ';
-            fieldController5.text = record['note'] ?? 'No ';
-
-
-          }
-        }
+        fieldController3.text = records[0]['session'] ?? 'No ';
+        fieldController4.text = records[0]['category'] ?? 'No ';
+        fieldController1.text = records[0]['start_date'] ?? 'No ';
+        fieldController2.text = records[0]['end_date'] ?? 'No ';
+        fieldController5.text = records[0]['note'] ?? 'No ';
       }
     }
 
@@ -238,8 +220,7 @@ class EditFormState extends State<EditForm> {
     }
 
 
-    await connHandler.close(); // Close the connection
-    // return generalDataCards; // Return the list of GeneralDataCard objects
+    await connHandler.close();
   }
 
 
@@ -382,7 +363,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateGenInfo(fieldController2.text, fieldController1.text, fieldController3.text);
+                    await updateGenInfo(fieldController2.text, fieldController1.text, fieldController3.text, widget.action!);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -405,17 +386,13 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateGenInfo(String phone_number, String date, String address) async {
+  Future<void> updateGenInfo(String phone_number, String date, String address, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "general_info");
+    doUpdate ?
+    await connHandler.updateGenInfo(widget.id, phone_number, date, address) :
+    await connHandler.insertGenInfo(phone_number, date, address, false, widget.id);
 
-    if (records.isNotEmpty) {
-      await connHandler.updateGenInfo(widget.id, phone_number, date, address);
-    } else if(records.isEmpty){
-      print('Запис не знайдено.');
-      await connHandler.insertGenInfo(phone_number, date, address, false, widget.id);
-    }
     await connHandler.close();
   }
 
@@ -506,7 +483,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateEduData(fieldController3.text, fieldController1.text, fieldController2.text);
+                    await updateEduData(fieldController3.text, fieldController1.text, fieldController2.text, widget.action!);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -528,17 +505,14 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateEduData(String institutionName, String endDate, String averageScore) async {
+  Future<void> updateEduData(String institutionName, String endDate, String averageScore, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "education_data");
 
-    if (records.isNotEmpty) {
-      await connHandler.updateEduData(widget.id, institutionName, endDate, averageScore);
-    } else if(records.isEmpty){
-      print('Запис не знайдено.');
-      await connHandler.insertEduDate(endDate, institutionName, averageScore, widget.id);
-    }
+    doUpdate ?
+    await connHandler.updateEduData(widget.id, institutionName, endDate, averageScore) :
+    await connHandler.insertEduDate(endDate, institutionName, averageScore, widget.id);
+
     await connHandler.close();
   }
 
@@ -633,7 +607,7 @@ class EditFormState extends State<EditForm> {
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    await updateArmyServ(fieldController3.text, fieldController2.text, fieldController1.text); // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
+                    await updateArmyServ(fieldController3.text, fieldController2.text, fieldController1.text, widget.action!); // Додаємо await, щоб переконатися, що оновлення завершується до показу діалогу
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -655,17 +629,14 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateArmyServ(String unit, String endDate, String startDate) async {
+  Future<void> updateArmyServ(String unit, String endDate, String startDate, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "service_in_army");
 
-    if (records.isNotEmpty) {
-      await connHandler.updateArmyServ(widget.id, startDate, endDate, unit);
-    } else if(records.isEmpty){
-      print('Запис не знайдено.');
-      await connHandler.insertArmyServ(endDate, startDate, unit, widget.id);
-    }
+    doUpdate ?
+    await connHandler.updateArmyServ(widget.id, startDate, endDate, unit):
+    await connHandler.insertArmyServ(endDate, startDate, unit, widget.id);
+
     await connHandler.close();
   }
 
@@ -804,7 +775,7 @@ class EditFormState extends State<EditForm> {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     await updateJobActivity(fieldController1.text, fieldController2.text, fieldController3.text,
-                        fieldController4.text, fieldController5.text);
+                        fieldController4.text, fieldController5.text, widget.action!);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -826,17 +797,14 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateJobActivity(String startDate, String endDate, String place, String jobPosition, String phoneNumber) async {
+  Future<void> updateJobActivity(String startDate, String endDate, String place, String jobPosition, String phoneNumber, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "job_activity");
 
-    if (records.isNotEmpty) {
-      await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
-    } else if(records.isEmpty){
-      print('Запис не знайдено.');
-      await connHandler.insertJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
-    }
+    doUpdate ?
+    await connHandler.updateJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber):
+    await connHandler.insertJobActivity(widget.id, startDate, endDate, place, jobPosition, phoneNumber);
+
     await connHandler.close();
   }
 
@@ -963,7 +931,7 @@ class EditFormState extends State<EditForm> {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     await updateParentsInfo(fieldController1.text, fieldController2.text, fieldController3.text,
-                        fieldController4.text, fieldController5.text);
+                        fieldController4.text, fieldController5.text, widget.action!);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -985,17 +953,14 @@ class EditFormState extends State<EditForm> {
       ),
     );
   }
-  Future<void> updateParentsInfo(String father, String fathersPhone, String mother, String mothersPhone, String note) async {
+  Future<void> updateParentsInfo(String father, String fathersPhone, String mother, String mothersPhone, String note, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "parents_info");
 
-    if (records.isNotEmpty) {
-      await connHandler.updateParentsInfo(widget.idTable!, father, fathersPhone, mother, mothersPhone, note);
-    } else if(records.isEmpty){
-      print('Запис не знайдено.');
-      await connHandler.insertParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
-    }
+    doUpdate?
+    await connHandler.updateParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note):
+    await connHandler.insertParentsInfo(widget.id, father, fathersPhone, mother, mothersPhone, note);
+
     await connHandler.close();
   }
 
@@ -1115,10 +1080,9 @@ class EditFormState extends State<EditForm> {
   Future<void> updateSocialActivity(int session, String date, String activity, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "social_activity");
 
     doUpdate ?
-    await connHandler.updateSocialActivity(widget.idTable!, session, date, activity) :
+    await connHandler.updateSocialActivity(widget.id, session, date, activity) :
     await connHandler.insertSocialActivity(widget.id, session, date, activity);
 
     await connHandler.close();
@@ -1232,10 +1196,9 @@ class EditFormState extends State<EditForm> {
   Future<void> updateCircleActivity(int session, String circleName, String note, bool doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "circle_activity");
 
     doUpdate ?
-    await connHandler.updateCircleActivity(widget.idTable!, session, circleName, note) :
+    await connHandler.updateCircleActivity(widget.id, session, circleName, note) :
     await connHandler.insertCircleActivity(widget.id, session, circleName, note);
 
     await connHandler.close();
@@ -1358,10 +1321,9 @@ class EditFormState extends State<EditForm> {
   Future<void> updateIndividualEscort(int session, String date, String content, doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "individual_escort");
 
     doUpdate ?
-    await connHandler.updateIndividualEscort(widget.idTable!, session, date, content) :
+    await connHandler.updateIndividualEscort(widget.id, session, date, content) :
     await connHandler.insertIndividualEscort(widget.id, session, date, content);
 
     await connHandler.close();
@@ -1484,10 +1446,9 @@ class EditFormState extends State<EditForm> {
   Future<void> updateEncouragement(int session, String date, String content, doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "individual_escort");
 
     doUpdate ?
-    await connHandler.updateEncouragement(widget.idTable!, session, date, content) :
+    await connHandler.updateEncouragement(widget.id, session, date, content) :
     await connHandler.insertEncouragement(widget.id, session, date, content);
 
     await connHandler.close();
@@ -1647,7 +1608,6 @@ class EditFormState extends State<EditForm> {
   Future<void> updateSocialPassport(int session, String category, String startDate, String endDate, String note, doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "social_passport");
 
     doUpdate ?
     await connHandler.updateSocialPassport(widget.idTable!, session, category, startDate, endDate, note) :
@@ -1824,7 +1784,6 @@ class EditFormState extends State<EditForm> {
   Future<void> updateWorkPlan(int session, String eventName, String executionDate, String executor, bool isDone, bool adminConfirmation, doUpdate) async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
-    // List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "work_plan");
 
     doUpdate ?
     await connHandler.updateWorkPlan(widget.idTable!, session, eventName, executionDate, executor, isDone, adminConfirmation) :

@@ -9,7 +9,6 @@ class SocialPassportCard extends DataCardBase {
   final String endDate;
   final String note;
 
-  final int idActivity;
 
 
   SocialPassportCard({
@@ -23,7 +22,6 @@ class SocialPassportCard extends DataCardBase {
     required this.startDate,
     required this.endDate,
     required this.note,
-    required this.idActivity
   }) : super(
       id: id,
       firstName: firstName,
@@ -44,7 +42,6 @@ class SocialPassportCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                idTable: idActivity,
                 selectedValue: "Соціальний паспорт",
                 action: true,
               ),

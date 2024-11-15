@@ -8,7 +8,7 @@ class ParentsInfoDataCard extends DataCardBase {
   final String mother;
   final String mothers_phone;
   final String note;
-  final int idTable;
+  // final int idTable;
 
   ParentsInfoDataCard({
     required int id,
@@ -21,7 +21,7 @@ class ParentsInfoDataCard extends DataCardBase {
     required this.mother,
     required this.mothers_phone,
     required this.note,
-    required this.idTable
+    // required this.idTable
 
   }) : super(
       id: id,
@@ -43,8 +43,8 @@ class ParentsInfoDataCard extends DataCardBase {
             MaterialPageRoute(
               builder: (context) => EditForm(
                 id: id,
-                idTable: idTable,
                 selectedValue: "Інформація про батьків",
+                action: true,
               ),
             ),
           );

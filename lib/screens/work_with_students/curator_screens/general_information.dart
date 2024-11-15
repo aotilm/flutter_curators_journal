@@ -148,7 +148,7 @@ class _GeneralInformationState extends State<GeneralInformation> {
           mothers_phone: record['mothers_phone'] ?? 'No',
           note: record['note'] ?? '-',
           showName: true,
-          idTable: 0
+          // idTable: int.parse(record['id'].toString())
       );
 
       dataCards.add(card);

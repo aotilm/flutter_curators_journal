@@ -54,7 +54,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text("Робота з студентами",
+        title: Text("${widget.group} - Робота з студентами",
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         // leading: Builder(
@@ -214,7 +214,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
                     SingleChildScrollView(
                       child: Column(
                         children: [
-                          Text('Група ${widget.group}'),
+                          // Text('Група ${widget.group}'),
                           FutureBuilder<List<DataCardBase>>(
                             future: returnCards(),
                             builder: (context, snapshot) {

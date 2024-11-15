@@ -42,6 +42,7 @@ class JobActivityDataCard extends DataCardBase {
               builder: (context) => EditForm(
                 id: id,
                 selectedValue: "Трудова діяльність",
+                action: true,
               ),
             ),
           );

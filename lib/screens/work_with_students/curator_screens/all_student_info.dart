@@ -30,12 +30,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
 
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "general_info");
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "general_info");
     List<GeneralDataCard> generalDataCards = [];
 
     for (var record in records) {
       final card = GeneralDataCard(
-          id: int.parse(record['id_student'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -57,12 +57,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'education_data'); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, 'education_data'); //
     List<EducationDataCard> educationDataCards = [];//
 
     for (var record in records) {
       final card = EducationDataCard(//
-          id: int.parse(record['id_student'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -83,12 +83,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "service_in_army"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "service_in_army"); //
     List<ArmyServiceDataCard> dataCards = [];//
 
     for (var record in records) {
       final card = ArmyServiceDataCard(//
-          id: int.parse(record['id_student'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -109,12 +109,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "job_activity"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "job_activity"); //
     List<JobActivityDataCard> dataCards = [];//
 
     for (var record in records) {
       final card = JobActivityDataCard(//
-          id: int.parse(record['id_student'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -138,13 +138,13 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'parents_info'); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, 'parents_info'); //
     List<ParentsInfoDataCard> dataCards = [];//
 
     for (var record in records) {
       final card = ParentsInfoDataCard(//
-          id: int.parse(record['id_student'].toString()),
-          idTable: int.parse(record['id'].toString()),
+          id: int.parse(record['id'].toString()),
+          // idTable: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -168,16 +168,15 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "social_activity"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "social_activity"); //
     List<SocialActivityCard> dataCards = [];//
 
     for (var record in records) {
       final card = SocialActivityCard(//
-          id: int.parse(record['id_student'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
-          idActivity: int.parse(record['id'].toString()),
           session: record['session'] ?? 'no',
           date: record['date'] ?? 'No',
           activity: record['activity'] ?? 'No',
@@ -195,13 +194,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "circle_activity"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "circle_activity"); //
     List<CircleActivityCard> dataCards = [];//
 
     for (var record in records) {
       final card = CircleActivityCard(//
-          id: int.parse(record['id_student'].toString()),
-          idActivity: int.parse(record['id'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -222,13 +220,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
 
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, 'individual_escort'); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, 'individual_escort'); //
     List<IndividualEscortCard> dataCards = [];//
 
     for (var record in records) {
       final card = IndividualEscortCard(//
-          id: int.parse(record['id_student'].toString()),
-          idActivity: int.parse(record['id'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -250,13 +247,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "encouragement"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "encouragement"); //
     List<EncouragementCard> dataCards = [];//
 
     for (var record in records) {
       final card = EncouragementCard(//
-          id: int.parse(record['id_student'].toString()),
-          idActivity: int.parse(record['id'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -278,13 +274,12 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
     await connHandler.connect();
 
     // Get the records
-    List<Map<String, dynamic>> records = await connHandler.selectStudentInfo(widget.id, "social_passport"); //
+    List<Map<String, dynamic>> records = await connHandler.selectStudentInfoByStId(widget.id, "social_passport"); //
     List<SocialPassportCard> dataCards = [];//
 
     for (var record in records) {
       final card = SocialPassportCard(//
-          id: int.parse(record['id_student'].toString()),
-          idActivity: int.parse(record['id'].toString()),
+          id: int.parse(record['id'].toString()),
           firstName: '',
           lastName: '',
           middleName: '',
@@ -358,6 +353,7 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                                         // lastName: widget.lastName,
                                         // middleName: widget.middleName,
                                         selectedValue: "Загальні дані",
+                                        action: false,
                                       ),
                                     ),
                                   );
@@ -401,10 +397,9 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                                     MaterialPageRoute(
                                       builder: (context) => EditForm(
                                         id: widget.id,
-                                        // firstName: widget.firstName,
-                                        // lastName: widget.lastName,
-                                        // middleName: widget.middleName,
                                         selectedValue: "Дані про освіту",
+                                        action: false,
+
                                       ),
                                     ),
                                   );
@@ -448,10 +443,8 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                                     MaterialPageRoute(
                                       builder: (context) => EditForm(
                                         id: widget.id,
-                                        // firstName: widget.firstName,
-                                        // lastName: widget.lastName,
-                                        // middleName: widget.middleName,
                                         selectedValue: "Служба в ЗСУ",
+                                        action: false,
                                       ),
                                     ),
                                   );
@@ -495,10 +488,8 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                                     MaterialPageRoute(
                                       builder: (context) => EditForm(
                                         id: widget.id,
-                                        // firstName: widget.firstName,
-                                        // lastName: widget.lastName,
-                                        // middleName: widget.middleName,
                                         selectedValue: "Трудова діяльність",
+                                        action: false,
                                       ),
                                     ),
                                   );
@@ -541,10 +532,8 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                                     MaterialPageRoute(
                                       builder: (context) => EditForm(
                                         id: widget.id,
-                                        // firstName: widget.firstName,
-                                        // lastName: widget.lastName,
-                                        // middleName: widget.middleName,
                                         selectedValue: "Інформація про батьків",
+                                        action: false,
                                       ),
                                     ),
                                   );
@@ -613,9 +602,6 @@ class _AllStudentInfoState extends State<AllStudentInfo> {
                           MaterialPageRoute(
                             builder: (context) => EditForm(
                               id: widget.id,
-                              // firstName: widget.firstName,
-                              // lastName: widget.lastName,
-                              // middleName: widget.middleName,
                               selectedValue: "Громадська діяльність",
                               action: false,
                             ),
