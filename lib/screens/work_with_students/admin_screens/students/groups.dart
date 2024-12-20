@@ -26,7 +26,6 @@ class _GroupsState extends State<Groups> {
 
     var firstSheetKey = excel.tables.keys.first;
     var sheet = excel.tables[firstSheetKey]!;
-    int i = 0;
     for (var row in sheet.rows.skip(1)) {
       if (row.every((cell) => cell == null || cell.value == null || cell.value.toString().trim().isEmpty)) {
         continue;
@@ -36,7 +35,6 @@ class _GroupsState extends State<Groups> {
       var lastName = row[1]?.value;
       var middleName = row[2]?.value;
       var group = row[3]?.value;
-      i++;
       var student = Student(firstName: firstName.toString(), secondName: lastName.toString(), middleName: middleName.toString(), group: group.toString());
       studentsList.add(student);
       // print('$i Імя: $column1, Прізвище: $column2, По батькові: $column3, Група: $column4');
@@ -74,20 +72,20 @@ class _GroupsState extends State<Groups> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-
-          // final connHandler = MySqlConnectionHandler();
-          // await connHandler.connect();
-          // List<Student> students = await returnExcelStudentData();
-          // await connHandler.insertStudent(students);
-          // await connHandler.close();
-
-        },
-        label: Text('Імпорт'),
-        icon: Icon(Icons.add),
-
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () async {
+      //
+      //     // final connHandler = MySqlConnectionHandler();
+      //     // await connHandler.connect();
+      //     // List<Student> students = await returnExcelStudentData();
+      //     // await connHandler.insertStudent(students);
+      //     // await connHandler.close();
+      //
+      //   },
+      //   label: Text('Імпорт'),
+      //   icon: Icon(Icons.add),
+      //
+      // ),
 
       body: SingleChildScrollView(
         child: Column(

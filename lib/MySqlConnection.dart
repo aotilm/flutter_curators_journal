@@ -2,13 +2,13 @@ import 'package:mysql_client/mysql_client.dart';
 import 'package:test_journal/screens/work_with_students/admin_screens/table/student.dart';
 
 class MySqlConnectionHandler {
-  // final String _host = "192.168.0.109";
-  final String _host = "192.168.122.1";
+  final String _host = "192.168.0.116";
+  // final String _host = "192.168.60.22";
   // final String _host = "192.168.1.10 9";
 
   final int _port = 3306;
-  final String _userName = "root";
-  final String _password = "123456";
+  final String _userName = "journal";
+  final String _password = "journal";
   final String _databaseName = "journal";
 
   MySQLConnection? _connection;
@@ -396,6 +396,300 @@ class MySqlConnectionHandler {
     return records; // Return the list of records
   }
 
+  Future<List<Map<String, dynamic>>> selectSpDefault(String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+              spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          where s.group = :group and cn.category != "Багатодітні родини" and cn.category != "Інваліди" and cn.category != "Чорнобильці";
+        ''',
+          {'group': group});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpManyChildren(String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+         SELECT cn.category, 
+              spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spmc.number_of_children, spmc.less_than_18, spmc.more_than_18_studying
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_many_child_family spmc ON spmc.id_category = spc.id
+          where s.group = :group  and cn.category = "Багатодітні родини";
+        ''',
+          {'group': group});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpInvalidPeople(String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+            spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spip.invalid_group
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_invalid_people spip ON spip.id_category = spc.id
+          where s.group = :group  and cn.category = "Інваліди";       
+         ''',
+          {'group': group});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpChornobyltsi(String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+            spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spip.`group`
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_chornobyltsi spip ON spip.id_category = spc.id
+          where s.group = :group  and cn.category = "Чорнобильці";       
+         ''',
+          {'group': group});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectSpDefaultById(int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+              spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          where s.id = :id and cn.category != "Багатодітні родини" and cn.category != "Інваліди" and cn.category != "Чорнобильці";
+        ''',
+          {'id': id});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed1: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpManyChildrenById(int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+         SELECT cn.category, 
+              spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spmc.number_of_children, spmc.less_than_18, spmc.more_than_18_studying
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_many_child_family spmc ON spmc.id_category = spc.id
+          where s.id = :id  and cn.category = "Багатодітні родини";
+        ''',
+          {'id': id});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpInvalidPeopleById(int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+            spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spip.invalid_group
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_invalid_people spip ON spip.id_category = spc.id
+          where s.id = :id  and cn.category = "Інваліди";       
+         ''',
+          {'id': id});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+  Future<List<Map<String, dynamic>>> selectSpChornobyltsiById(int id) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('''
+          SELECT cn.category, 
+            spc.id, spc.start_date, spc.end_date, 
+              s.second_name, s.first_name, s.middle_name, spip.`group`
+          FROM sp_category_name cn
+          JOIN sp_category spc ON cn.id = spc.id_category_name
+          JOIN students s ON s.id = spc.id_student
+          JOIN sp_chornobyltsi spip ON spip.id_category = spc.id
+          where s.id = :id  and cn.category = "Чорнобильці";       
+         ''',
+          {'id': id});
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<Map<String, dynamic>>> selectSpCategoryName() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<Map<String, dynamic>> records = []; // List to store records
+
+    try {
+
+      var result = await _connection!.execute('SELECT * FROM sp_category_name');
+      for (final row in result.rows) {
+        var record = row.assoc();
+        records.add(record);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+
+    return records; // Return the list of records
+  }
+
+  Future<List<String>> selectSpCategoryNameOld() async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return [];
+    }
+
+    List<String> records = [];
+
+    try {
+      var result = await _connection!.execute(
+          'SELECT category FROM sp_category_name '
+      );
+
+      for (final row in result.rows) {
+        var record = row.colAt(0);
+        records.add(record!);
+      }
+    } catch (e) {
+      print('Select query failed: $e');
+    }
+    return records;
+
+  }
+
   Future<List<Map<String, dynamic>>> selectWorkPlan() async {
     if (_connection == null) {
       print('No database connection found.');
@@ -493,7 +787,7 @@ class MySqlConnectionHandler {
 
   }
 
-  Future<void> insertStudent(List<Student> studentsList) async {
+  Future<void> insertStudentOld(List<Student> studentsList) async {
     if (_connection == null) {
       print('No database connection found.');
     }
@@ -520,6 +814,33 @@ class MySqlConnectionHandler {
     }
 
   }
+
+  Future<void> insertStudent(String secondName, String firstName, String middleName, String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+    }
+
+    try {
+      var result = await _connection!.execute(
+          '''
+            INSERT INTO 
+            students (second_name, first_name, middle_name, `group`) 
+            VALUES (:second_name, :first_name, :middle_name, :group);
+         ''',
+          {
+            'second_name': secondName,
+            'first_name': firstName,
+            'middle_name': middleName,
+            'group': group
+          }
+      );
+      print(result.affectedRows);
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+
+  }
+  
 
   Future<void> insertGenInfo(String phone, String date, String address, bool status, int id) async {
     if (_connection == null) {
@@ -1071,7 +1392,7 @@ class MySqlConnectionHandler {
       print('Update query failed: $e');
     }
   }
-  Future<void> insertSocialPassport(int id, int session, String category, String startDate, String endDate, String note) async {
+  Future<void> insertDefaultSp(int idStudent, int idCategory, String startDate, String endDate) async {
     if (_connection == null) {
       print('No database connection found.');
     }
@@ -1080,16 +1401,14 @@ class MySqlConnectionHandler {
       var result = await _connection!.execute(
           '''
             INSERT INTO 
-            social_passport (session, category, start_date, end_date, note, id_student) 
-            VALUES (:session, :category, :start_date, :end_date, :note, :id_student);
+            sp_category (id_student, id_category_name, start_date, end_date) 
+            VALUES (:id_student, :id_category, :start_date, :end_date);
          ''',
           {
-            'session': session,
-            'category': category,
+            'id_student': idStudent,
+            'id_category': idCategory,
             'start_date': startDate,
             'end_date': endDate,
-            'note': note,
-            'id_student': id,
           }
       );
 
@@ -1099,6 +1418,149 @@ class MySqlConnectionHandler {
     }
 
   }
+  Future<void> insertInvalidSp(int idStudent, int idCategory, String startDate, String endDate, String invalidGroup) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      await _connection!.execute('START TRANSACTION');
+
+      var result = await _connection!.execute(
+          '''
+      INSERT INTO 
+      sp_category (id_student, id_category_name, start_date, end_date) 
+      VALUES (:id_student, :id_category, :start_date, :end_date);
+      ''',
+          {
+            'id_student': idStudent,
+            'id_category': idCategory,
+            'start_date': startDate,
+            'end_date': endDate,
+          }
+      );
+
+      BigInt spCategoryId = result.lastInsertID;
+
+      if (spCategoryId  > BigInt.zero) {
+        await _connection!.execute(
+            '''
+        INSERT INTO 
+        sp_invalid_people (id_category, invalid_group) 
+        VALUES (:id_category, :invalid_group);
+        ''',
+            {
+              'id_category': spCategoryId,
+              'invalid_group': invalidGroup,
+            }
+        );
+      }
+
+      await _connection!.execute('COMMIT');
+
+      print('Data inserted successfully into sp_category and sp_invalid_people');
+    } catch (e) {
+      await _connection!.execute('ROLLBACK');
+      print('Insert query failed: $e');
+    }
+  }
+  Future<void> insertChornobyltsiSp(int idStudent, int idCategory, String startDate, String endDate, String group) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      // Початок транзакції
+      await _connection!.transactional((conn) async {
+        // Вставка в sp_category
+        var result = await conn.execute(
+            '''
+        INSERT INTO 
+        sp_category (id_student, id_category_name, start_date, end_date) 
+        VALUES (:id_student, :id_category, :start_date, :end_date);
+        ''',
+            {
+              'id_student': idStudent,
+              'id_category': idCategory,
+              'start_date': startDate,
+              'end_date': endDate,
+            }
+        );
+
+        // Отримання останнього вставленого id
+        BigInt categoryId = result.lastInsertID!;
+
+        // Вставка в sp_chornobyltsi з використанням отриманого categoryId
+        await conn.execute(
+            '''
+        INSERT INTO 
+        sp_chornobyltsi (id_category, `group`) 
+        VALUES (:id_category, :group);
+        ''',
+            {
+              'id_category': categoryId,
+              'group': group,
+            }
+        );
+
+        print('Data successfully inserted into both tables');
+      });
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+  }
+  Future<void> insertManyChildrenSp(int idStudent, int idCategory, String startDate, String endDate, String numOfChild, String lessThan18, String moreThan18Studying) async {
+    if (_connection == null) {
+      print('No database connection found.');
+      return;
+    }
+
+    try {
+      // Початок транзакції
+      await _connection!.transactional((conn) async {
+        // Вставка в sp_category
+        var result = await conn.execute(
+            '''
+        INSERT INTO 
+        sp_category (id_student, id_category_name, start_date, end_date) 
+        VALUES (:id_student, :id_category, :start_date, :end_date);
+        ''',
+            {
+              'id_student': idStudent,
+              'id_category': idCategory,
+              'start_date': startDate,
+              'end_date': endDate,
+            }
+        );
+
+        // Отримання останнього вставленого id
+        BigInt categoryId = result.lastInsertID!;
+
+        // Вставка в sp_chornobyltsi з використанням отриманого categoryId
+        await conn.execute(
+            '''
+        INSERT INTO 
+        sp_many_child_family (id_category, number_of_children, less_than_18, more_than_18_studying) 
+        VALUES (:id_category, :number_of_children, :less_than_18, :more_than_18_studying);
+        ''',
+            {
+              'id_category': categoryId,
+              'number_of_children': numOfChild,
+              'less_than_18': lessThan18,
+              'more_than_18_studying': moreThan18Studying
+            }
+        );
+
+        print('Data successfully inserted into both tables many childreen ');
+      });
+    } catch (e) {
+      print('Insert query failed: $e');
+    }
+  }
+
+
 
   Future<void> updateWorkPlan(int id, int session, String eventName, String executionDate, String executor, bool isDone, bool adminConfirmation) async {
     if (_connection == null) {

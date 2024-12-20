@@ -9,6 +9,7 @@ import '../../MySqlConnection.dart';
 export 'cards/cards.dart';
 import 'cards/data_card_base.dart';
 import 'curator_screens/general_information.dart';
+import 'edit_form.dart';
 
 class CuratorsWorkWithStudents extends StatefulWidget {
   const CuratorsWorkWithStudents({super.key, required this.group});
@@ -211,29 +212,47 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          // Text('Група ${widget.group}'),
-                          FutureBuilder<List<DataCardBase>>(
-                            future: returnCards(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return Text('No data found');
-                              }
+                    Scaffold(
+                      body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // Text('Група ${widget.group}'),
+                            FutureBuilder<List<DataCardBase>>(
+                              future: returnCards(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                  return Text('No data found');
+                                }
 
-                              return Column(
-                                children: snapshot.data!.map<Widget>((card) {
-                                  return card.returnCard(context);
-                                }).toList(),
-                              );
-                            },
-                          )
-                        ],
+                                return Column(
+                                  children: snapshot.data!.map<Widget>((card) {
+                                    return card.returnCard(context);
+                                  }).toList(),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditForm(
+                                id: 0,
+                                group: widget.group,
+                                selectedValue: "Додавання студента",
+                                action: true,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.add),
                       ),
                     ),
                     Column(
@@ -273,7 +292,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
             ],
           ),
         ),
-        WorkPlan(),
+        WorkPlan(isAdmin: false,),
       ][currentPageIndex]
     );
   }
@@ -288,7 +307,7 @@ class _CuratorsWorkWithStudentsState extends State<CuratorsWorkWithStudents> {
       case 4:
         return Encouragement(group: widget.group,);
       case 5:
-        return SocialPassport();
+        return SocialPassport(group: widget.group,);
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,

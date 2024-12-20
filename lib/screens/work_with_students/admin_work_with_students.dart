@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_journal/screens/work_with_students/admin_screens/students/groups.dart';
+import 'package:test_journal/screens/work_with_students/excel_import_export.dart';
 import 'package:test_journal/screens/work_with_students/work_plan.dart';
 
 class AdminWorkWithStudents extends StatefulWidget {
@@ -20,6 +21,18 @@ class _AdminWorkWithStudentsState extends State<AdminWorkWithStudents> {
         backgroundColor: Theme.of(context).colorScheme.primary,
 
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //     onPressed: () {
+      //       showDialog(
+      //         context: context,
+      //         builder: (BuildContext context) {
+      //           return const ExcelImportExport();
+      //         },
+      //       );
+      //     },
+      //   label: Text('Імпорт/Експорт'),
+      //   icon: Icon(Icons.import_export)
+      // ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -44,13 +57,19 @@ class _AdminWorkWithStudentsState extends State<AdminWorkWithStudents> {
             icon: Icon(Icons.list_alt),
             label: 'План роботи',
           ),
+          // NavigationDestination(
+          //   selectedIcon: Icon(Icons.list_alt, color: Colors.white,),
+          //   icon: Icon(Icons.list_alt),
+          //   label: 'Імпорт/Експорт',
+          // ),
         ],
       ),
 
       body: <Widget>[
         Groups(),
         Text('2'),
-        WorkPlan(),
+        WorkPlan(isAdmin: true,),
+        // Text('import')
       ][currentPageIndex]
     );
   }

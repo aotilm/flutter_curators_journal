@@ -9,6 +9,7 @@ class WorkPlanCard {
   final String executor;
   final bool isDone;
   final bool adminConfirmation;
+  final bool isAdmin;
 
   WorkPlanCard({
     required this.id,
@@ -17,7 +18,8 @@ class WorkPlanCard {
     required this.executionDate,
     required this.executor,
     required this.isDone,
-    required this.adminConfirmation
+    required this.adminConfirmation,
+    required this.isAdmin
   });
 
   Card returnWorkPlanCard(BuildContext context) {
@@ -34,6 +36,7 @@ class WorkPlanCard {
                 idTable: id,
                 selectedValue: 'План роботи',
                 action: true,
+                isAdmin: isAdmin,
               ),
             ),
           ): null;

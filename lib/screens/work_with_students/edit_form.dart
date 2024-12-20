@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import '../../../MySqlConnection.dart';
 
 class EditForm extends StatefulWidget {
@@ -11,7 +10,9 @@ class EditForm extends StatefulWidget {
     required this.id,
     this.idTable,
     required this.selectedValue,
-    this.action
+    this.action,
+    this.isAdmin,
+    this.group
     
   });
 
@@ -19,6 +20,8 @@ class EditForm extends StatefulWidget {
   final int? idTable;
   String selectedValue;
   final bool? action;
+  final bool? isAdmin;
+  final String? group;
 
   @override
   EditFormState createState() => EditFormState();
@@ -29,7 +32,9 @@ class EditFormState extends State<EditForm> {
   @override
   void initState() {
     super.initState();
-    returnFormFields();
+    widget.action! ? returnFormFields() : print('hello');
+    selectCategoriesNames();
+    // log("${widget.id}");
   }
 
   DateTime? selectedDate1;
@@ -43,7 +48,11 @@ class EditFormState extends State<EditForm> {
 
   final List<String> editForms = ["Загальні дані", 'Дані про освіту', 'Служба в ЗСУ', 'Трудова діяльність',
     'Інформація про батьків', 'Громадська діяльність',
-    'Гурткова діяльність', 'Індивідуальний супровід', 'Заохочення', 'Соціальний паспорт', 'План роботи'];
+    'Гурткова діяльність', 'Індивідуальний супровід', 'Заохочення', 'Соціальний паспорт', 'План роботи' , 'Додавання студента'];
+
+  List<Map<String, dynamic>> spCategories = [];
+  String? selectedCategory;
+  Map<String, dynamic>? selectedCategoryMap;
 
   final TextEditingController fieldController1 = TextEditingController();
   final TextEditingController fieldController2 = TextEditingController();
@@ -96,6 +105,10 @@ class EditFormState extends State<EditForm> {
     if(widget.selectedValue == editForms[10]){
       return getWorkPlanForm();
     }
+    if(widget.selectedValue == editForms[11]){
+      return addStudentForm();
+    }
+
 
     else return Text('This page is in developing...');
   }
@@ -1454,167 +1467,578 @@ class EditFormState extends State<EditForm> {
     await connHandler.close();
   }
 
-  Widget getSocialPassportForm(){
-    return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: TextFormField(
-                  controller: fieldController3,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.note),
-                    labelText: 'Семестр',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введіть семестр';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    fieldController3.text = value!;
-                  },
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: TextFormField(
-                  controller: fieldController4,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.note),
-                    labelText: 'Категорія',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введіть зміст';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    fieldController4.text = value!;
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
-                    child: TextFormField(
-                      controller: fieldController1,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.date_range),
-                        labelText: 'Дата початку',
-                      ),
-                      readOnly: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Введіть дату';
-                        }
-                        return null;
-                      },
-                      onTap: () {
-                        selectDate();
-                      },
-                      onSaved: (value) {
-                        fieldController1.text = value!;
-                      },
+  Widget getSpForms(){
+    switch(selectedCategory){
+      case 'Інваліди':
+        return invalidSpForm();
+      case 'Чорнобильці':
+        return chornobyltciSpForm();
+      case 'Багатодітні родини':
+        return manyChildrenSpForm();
+      default:
+        return defaultSpForm();
+    }
+  }
+  Widget defaultSpForm(){
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController1,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата початку',
                     ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate();
+                    },
+                    onSaved: (value) {
+                      fieldController1.text = value!;
+                    },
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.45, // 30% of screen width
-                    child: TextFormField(
-                      controller: fieldController2,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.date_range),
-                        labelText: 'Дата закінчення',
-                      ),
-                      readOnly: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Введіть дату';
-                        }
-                        return null;
-                      },
-                      onTap: () {
-                        selectDate2();
-                      },
-                      onSaved: (value) {
-                        fieldController2.text = value!;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: TextFormField(
-                  controller: fieldController5,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.note),
-                    labelText: 'Примітка',
-                  ),
-                  onSaved: (value) {
-                    fieldController5.text = value!;
-                  },
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FilledButton(
-                onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
-                    await updateSocialPassport(int.parse(fieldController3.text), fieldController4.text, fieldController1.text, fieldController2.text, fieldController5.text, widget.action!);
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController2,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата закінчення',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate2();
+                    },
+                    onSaved: (value) {
+                      fieldController2.text = value!;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  try {
+                    // Спроба оновити інформацію в базі даних
+                    await updateDefaultSp(
+                      widget.id,
+                      int.parse(selectedCategoryMap?['id']),
+                      fieldController1.text,
+                      fieldController2.text,
+                    );
+
+                    // Показує діалогове вікно з повідомленням про успіх
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return dialogMessage('Інформацію оновлено у базі даних!');
                       },
                     );
+                  } catch (e) {
+                    // Обробка помилки і показ діалогового вікна з повідомленням про помилку
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Сталася помилка: $e');
+                      },
+                    );
                   }
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.add),
-                    Text('Оновити дані'),
-                  ],
-                ),
+                }
+              }
+              ,
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  Text('Оновити дані'),
+                ],
               ),
-            ],
-          )
+            ),
+          ],
+        )
+      ],
+    );
+  }
+  Future<void> updateDefaultSp(int idStudent, int idCategory, String startDate, String endDate) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    await connHandler.insertDefaultSp(idStudent, idCategory, startDate, endDate);
+    await connHandler.close();
+  }
+
+
+  Widget invalidSpForm(){
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController1,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата початку',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate();
+                    },
+                    onSaved: (value) {
+                      fieldController1.text = value!;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController2,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата закінчення',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate2();
+                    },
+                    onSaved: (value) {
+                      fieldController2.text = value!;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: fieldController3,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.note),
+                  labelText: 'Група інвалідності',
+                ),
+                onSaved: (value) {
+                  fieldController3.text = value!;
+                },
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  await updateInvalidSp(widget.id, int.parse(selectedCategoryMap?['id']), fieldController1.text, fieldController2.text, fieldController3.text);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return dialogMessage('Інформацію оновлено у базі даних!');
+                    },
+                  );
+                }
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  Text('Оновити дані'),
+                ],
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+
+  }
+  Future<void> updateInvalidSp(int idStudent, int idCategory, String startDate, String endDate, String invalidGroup) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    await connHandler.insertInvalidSp(idStudent, idCategory, startDate, endDate, invalidGroup);
+    await connHandler.close();
+  }
+
+
+  Widget chornobyltciSpForm(){
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController1,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата початку',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate();
+                    },
+                    onSaved: (value) {
+                      fieldController1.text = value!;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController2,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата закінчення',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate2();
+                    },
+                    onSaved: (value) {
+                      fieldController2.text = value!;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: fieldController3,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.note),
+                  labelText: 'Група',
+                ),
+                onSaved: (value) {
+                  fieldController3.text = value!;
+                },
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  await updateChornobyltsiSp(widget.id, int.parse(selectedCategoryMap?['id']), fieldController1.text, fieldController2.text, fieldController3.text);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return dialogMessage('Інформацію оновлено у базі даних!');
+                    },
+                  );
+                }
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  Text('Оновити дані'),
+                ],
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+
+  }
+  Future<void> updateChornobyltsiSp(int idStudent, int idCategory, String startDate, String endDate, String group) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    await connHandler.insertChornobyltsiSp(idStudent, idCategory, startDate, endDate, group);
+    await connHandler.close();
+  }
+
+
+
+  Widget manyChildrenSpForm(){
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController1,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата початку',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate();
+                    },
+                    onSaved: (value) {
+                      fieldController1.text = value!;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45, // 30% of screen width
+                  child: TextFormField(
+                    controller: fieldController2,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Дата закінчення',
+                    ),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введіть дату';
+                      }
+                      return null;
+                    },
+                    onTap: () {
+                      selectDate2();
+                    },
+                    onSaved: (value) {
+                      fieldController2.text = value!;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: fieldController3,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                maxLines: null,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.note),
+                  labelText: 'Кількість дітей',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введіть кількість дітей';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  fieldController3.text = value!;
+                },
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: fieldController4,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                maxLines: null,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.note),
+                  labelText: 'З них яким менше 18',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введіть кількість дітей яким менше 18';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  fieldController3.text = value!;
+                },
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: fieldController5,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                maxLines: null,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.note),
+                  labelText: 'З них яким більше 18 та навчаються',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введіть ';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  fieldController3.text = value!;
+                },
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  await updateManyChildrenSp(widget.id, int.parse(selectedCategoryMap?['id']), fieldController1.text, fieldController2.text, fieldController3.text, fieldController4.text, fieldController5.text);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return dialogMessage('Інформацію оновлено у базі даних!');
+                    },
+                  );
+                }
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  Text('Оновити дані'),
+                ],
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+
+  }
+  Future<void> updateManyChildrenSp(int idStudent, int idCategory, String startDate, String endDate, String numOfChild, String lessThan18, String moreThan18Studying) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+    await connHandler.insertManyChildrenSp(idStudent, idCategory, startDate, endDate, numOfChild, lessThan18, moreThan18Studying);
+    await connHandler.close();
+  }
+
+  Widget getSocialPassportForm(){
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          DropdownButton<String>(
+            hint: Text("Виберіть категорію:"),
+            value: selectedCategory,
+            items: spCategories.map((Map<String, dynamic> item) {
+              return DropdownMenuItem<String>(
+                value: item['category'],
+                child: Text(item['category']),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedCategory = newValue!;
+                fieldController4.text= newValue!;
+                selectedCategoryMap = spCategories.firstWhere(
+                      (element) => element['category'] == selectedCategory,
+                );
+                // print(selectedCategoryMap?['id']);
+                // clearData();
+                // returnFormFields();
+              });
+            },
+          ),
+          getSpForms(),
         ],
       ),
     );
   }
-  Future<void> updateSocialPassport(int session, String category, String startDate, String endDate, String note, doUpdate) async {
+
+  Future<void> selectCategoriesNames() async {
     final connHandler = MySqlConnectionHandler();
     await connHandler.connect();
 
-    doUpdate ?
-    await connHandler.updateSocialPassport(widget.idTable!, session, category, startDate, endDate, note) :
-    await connHandler.insertSocialPassport(widget.id, session, category, startDate, endDate, note);
+    List<Map<String, dynamic>> fetchedCategories = await connHandler.selectSpCategoryName();
 
     await connHandler.close();
+
+    setState(() {
+      spCategories = fetchedCategories;
+    });
   }
+
 
   Widget getWorkPlanForm(){
 
@@ -1734,6 +2158,7 @@ class EditFormState extends State<EditForm> {
 
                 ],
               ),
+              // widget.isAdmin! ?
               Row(
                 children: [
                   Checkbox(
@@ -1748,6 +2173,7 @@ class EditFormState extends State<EditForm> {
 
                 ],
               )
+                  // : Container()
 
             ],
           ),
@@ -1792,6 +2218,119 @@ class EditFormState extends State<EditForm> {
     await connHandler.close();
   }
 
+  Widget addStudentForm(){
+
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  controller: fieldController3,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Прізвище',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть прізвище';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController3.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  controller: fieldController4,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Ім\'я',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть ім\'я';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController4.text = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  controller: fieldController5,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.note),
+                    labelText: 'Побатькові',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введіть побатькові';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    fieldController5.text = value!;
+                  },
+                ),
+              ),
+
+
+            ],
+          ),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    await insertStudent(fieldController3.text, fieldController4.text, fieldController5.text, widget.group!);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return dialogMessage('Інформацію оновлено у базі даних!');
+                      },
+                    );
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('Оновити дані'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> insertStudent(String secondName, String firstName, String middleName, String group) async {
+    final connHandler = MySqlConnectionHandler();
+    await connHandler.connect();
+
+    await connHandler.insertStudent(secondName, firstName, middleName, group);
+    await connHandler.close();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1806,23 +2345,23 @@ class EditFormState extends State<EditForm> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  DropdownButton<String>(
-                    hint: Text("Виберіть форму заповнення:"),
-                    value: widget.selectedValue,
-                    items: editForms.map((String item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        widget.selectedValue = newValue!;
-                        clearData();
-                        returnFormFields();
-                      });
-                    },
-                  ),
+                  // DropdownButton<String>(
+                  //   hint: Text("Виберіть форму заповнення:"),
+                  //   value: widget.selectedValue,
+                  //   items: editForms.map((String item) {
+                  //     return DropdownMenuItem<String>(
+                  //       value: item,
+                  //       child: Text(item),
+                  //     );
+                  //   }).toList(),
+                  //   onChanged: (String? newValue) {
+                  //     setState(() {
+                  //       widget.selectedValue = newValue!;
+                  //       clearData();
+                  //       returnFormFields();
+                  //     });
+                  //   },
+                  // ),
 
                   getFormContent()
 

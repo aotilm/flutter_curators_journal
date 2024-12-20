@@ -5,8 +5,8 @@ import 'cards/cards.dart';
 import 'edit_form.dart';
 
 class WorkPlan extends StatefulWidget {
-  const WorkPlan({super.key});
-
+  const WorkPlan({super.key, required this.isAdmin});
+  final bool isAdmin;
   @override
   State<WorkPlan> createState() => _WorkPlanState();
 }
@@ -31,6 +31,8 @@ class _WorkPlanState extends State<WorkPlan> {
         executor: record['executor'] ?? 'No',
         isDone: record['isDone'] == "1",
         adminConfirmation: record['admin_confirmation'] == "1",
+        isAdmin: widget.isAdmin
+
       );
 
       dataCards.add(card);
